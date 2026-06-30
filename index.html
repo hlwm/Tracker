@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Asset Verify — Duke-NUS</title>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<style>
+:root {
+  --bg:       #f4f6f9;
+  --surface:  #ffffff;
+  --border:   #e2e8f0;
+  --text:     #0f172a;
+  --text-2:   #475569;
+  --text-3:   #94a3b8;
+  --accent:   #2563eb;
+  --success:  #16a34a;
+  --warning:  #d97706;
+  --danger:   #dc2626;
+  --radius:   12px;
+  --shadow:   0 1px 4px rgba(0,0,0,.08);
+  --shadow-md:0 4px 20px rgba(0,0,0,.14);
+}
+[data-theme="dark"] {
+  --bg:       #0f172a;
+  --surface:  #1e293b;
+  --border:   #334155;
+  --text:     #f1f5f9;
+  --text-2:   #94a3b8;
+  --text-3:   #475569;
+  --accent:   #3b82f6;
+  --shadow:   0 1px 4px rgba(0,0,0,.3);
+  --shadow-md:0 4px 20px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;display:flex;flex-direction:column;}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;}
+input,select{font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;outline:none;width:100%;}
+input:focus,select:focus{border-color:var(--accent);}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;}
+.header-logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.header-logo svg{color:#fff;}
+.header-title{font-size:15px;font-weight:700;flex:1;}
+.header-sub{font-size:10px;color:var(--text-3);}
+.icon-btn{width:36px;height:36px;border-radius:8px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-2);flex-shrink:0;}
+
+/* PROGRESS BAR */
+.progress-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;}
+.progress-label span:first-child{color:var(--text-2);}
+.progress-label span:last-child{font-weight:600;color:var(--accent);}
+.progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s;}
+.stat-row{display:flex;gap:8px;margin-top:8px;}
+.stat{flex:1;text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px;}
+.stat-n{font-size:16px;font-weight:700;}
+.stat-l{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;}
+.stat.ok  .stat-n{color:var(--success);}
+.stat.warn .stat-n{color:var(--warning);}
+.stat.bad .stat-n{color:var(--danger);}
+
+/* PAGES */
+.page{display:none;flex:1;overflow-y:auto;padding-bottom:80px;}
+.page.active{display:block;}
+
+/* SETUP PAGE */
+.setup-card{margin:20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.setup-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.setup-sub{font-size:12px;color:var(--text-3);margin-bottom:14px;}
+.or-divider{text-align:center;color:var(--text-3);font-size:12px;margin:12px 0;position:relative;}
+.or-divider::before,.or-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border);}
+.or-divider::before{left:0;}.or-divider::after{right:0;}
+.btn{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;border:1px solid transparent;}
+.btn-primary{background:var(--accent);color:#fff;width:100%;}
+.btn-primary:hover{opacity:.9;}
+.btn-outline{background:none;border-color:var(--border);color:var(--text);width:100%;}
+.btn-outline:hover{background:var(--bg);}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:6px;}
+.url-row{display:flex;gap:8px;margin-top:8px;}
+.url-row input{flex:1;}
+.url-row button{flex-shrink:0;padding:8px 14px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap;}
+
+/* SCAN PAGE */
+.scan-wrap{position:relative;background:#000;overflow:hidden;}
+.scan-wrap video{width:100%;display:block;max-height:60vw;object-fit:cover;}
+.scan-wrap canvas{display:none;}
+.scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.scan-frame{width:56vw;height:56vw;max-width:220px;max-height:220px;border:2px solid rgba(255,255,255,.8);border-radius:12px;position:relative;box-shadow:0 0 0 2000px rgba(0,0,0,.45);}
+.scan-frame::before,.scan-frame::after,.scan-corner-bl,.scan-corner-br{content:'';position:absolute;width:20px;height:20px;border-color:#fff;border-style:solid;}
+.scan-frame::before{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0;}
+.scan-frame::after{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 4px 0 0;}
+.scan-corner-bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px;}
+.scan-corner-br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0;}
+.scan-laser{position:absolute;left:8px;right:8px;height:2px;background:linear-gradient(90deg,transparent,#3b82f6,transparent);animation:laser 2s ease-in-out infinite;top:10%;}
+@keyframes laser{0%,100%{top:10%}50%{top:88%}}
+.scan-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:rgba(255,255,255,.75);font-size:12px;}
+.scan-status{padding:12px 16px;min-height:56px;display:flex;align-items:center;gap:10px;font-size:14px;}
+.scan-status.idle{color:var(--text-3);}
+.scan-status.ok{background:rgba(22,163,74,.08);color:var(--success);}
+.scan-status.warn{background:rgba(220,38,38,.08);color:var(--danger);}
+
+/* RESULT CARD */
+.result-card{margin:0 16px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.result-card.ok   .result-header{background:#f0fdf4;border-bottom:1px solid #bbf7d0;}
+.result-card.warn .result-header{background:#fef2f2;border-bottom:1px solid #fecaca;}
+.result-card.flag .result-header{background:#fffbeb;border-bottom:1px solid #fde68a;}
+.result-header{padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.result-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.result-card.ok   .result-icon{background:var(--success);color:#fff;}
+.result-card.warn .result-icon{background:var(--danger);color:#fff;}
+.result-card.flag .result-icon{background:var(--warning);color:#fff;}
+.result-asset{font-size:13px;font-weight:700;}
+.result-desc{font-size:11px;color:var(--text-2);margin-top:1px;}
+.result-body{padding:12px 14px;}
+.result-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.result-row:last-child{border-bottom:none;}
+.result-key{color:var(--text-3);width:110px;flex-shrink:0;font-weight:500;}
+.result-val{color:var(--text);word-break:break-word;}
+.action-row{display:flex;gap:8px;padding:10px 14px;background:var(--bg);}
+.action-btn{flex:1;padding:8px 6px;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid transparent;transition:all .15s;}
+.action-btn.ok  {background:#f0fdf4;border-color:#86efac;color:var(--success);}
+.action-btn.flag{background:#fffbeb;border-color:#fde68a;color:var(--warning);}
+.action-btn.bad {background:#fef2f2;border-color:#fca5a5;color:var(--danger);}
+.action-btn.active.ok  {background:var(--success);color:#fff;}
+.action-btn.active.flag{background:var(--warning);color:#fff;}
+.action-btn.active.bad {background:var(--danger);color:#fff;}
+.note-row{padding:0 14px 10px;background:var(--bg);}
+.note-row input{font-size:12px;padding:6px 10px;border-radius:6px;}
+
+/* LIST PAGE */
+.list-filter{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:8px;}
+.list-filter input{flex:1;font-size:13px;padding:7px 10px;}
+.list-filter select{width:auto;font-size:12px;padding:7px 8px;}
+.asset-list{padding:8px 16px;}
+.asset-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);}
+.asset-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.asset-dot.ok  {background:var(--success);}
+.asset-dot.flag{background:var(--warning);}
+.asset-dot.bad {background:var(--danger);}
+.asset-dot.none{background:var(--border);}
+.asset-info{flex:1;min-width:0;}
+.asset-no{font-size:13px;font-weight:600;color:var(--text);}
+.asset-name{font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
+.asset-meta{font-size:11px;color:var(--text-2);}
+.asset-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;flex-shrink:0;}
+.badge-ok  {background:#f0fdf4;color:var(--success);}
+.badge-flag{background:#fffbeb;color:var(--warning);}
+.badge-bad {background:#fef2f2;color:var(--danger);}
+.badge-none{background:var(--surface-2,#f8fafc);color:var(--text-3);border:1px solid var(--border);}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:200;}
+.nav-tab{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:500;color:var(--text-3);background:none;border:none;cursor:pointer;transition:color .15s;}
+.nav-tab.active{color:var(--accent);}
+.nav-tab svg{width:20px;height:20px;}
+
+/* TOAST */
+#toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;transition:opacity .3s;pointer-events:none;opacity:0;white-space:nowrap;}
+
+/* MISC */
+.empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
+.empty p{font-size:13px;margin-top:8px;}
+.loading{text-align:center;padding:2rem;color:var(--text-3);font-size:13px;}
+.chip{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:20px;font-size:11px;padding:2px 8px;color:var(--text-2);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17h7M17 14v7"/></svg>
+  </div>
+  <div style="flex:1;">
+    <div class="header-title">Asset Verify</div>
+    <div class="header-sub" id="header-sub">Duke-NUS — Load asset list to begin</div>
+  </div>
+  <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+    <svg id="theme-icon" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar" id="progress-bar" style="display:none;">
+  <div class="progress-label">
+    <span id="prog-label">Verification progress</span>
+    <span id="prog-pct">0%</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="stat-row">
+    <div class="stat ok"><div class="stat-n" id="stat-ok">0</div><div class="stat-l">Verified</div></div>
+    <div class="stat warn"><div class="stat-n" id="stat-flag">0</div><div class="stat-l">Flagged</div></div>
+    <div class="stat bad"><div class="stat-n" id="stat-miss">0</div><div class="stat-l">Missing</div></div>
+    <div class="stat"><div class="stat-n" id="stat-pend">0</div><div class="stat-l">Pending</div></div>
+  </div>
+</div>
+
+<!-- ── SETUP PAGE ── -->
+<div id="page-setup" class="page active">
+  <div class="setup-card">
+    <div class="setup-title">Load Fixed Asset List</div>
+    <div class="setup-sub">Upload the FA CSV from NUS or fetch from a URL (GitHub, SharePoint).</div>
+
+    <label style="display:block;margin-bottom:8px;font-size:12px;font-weight:600;color:var(--text-2);">Upload CSV file</label>
+    <input type="file" id="csv-file" accept=".csv,.xlsx" style="display:none;" onchange="loadCSVFile(event)">
+    <button class="btn btn-primary" onclick="document.getElementById('csv-file').click()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Choose CSV File
+    </button>
+
+    <div class="or-divider">or fetch from URL</div>
+
+    <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:600;color:var(--text-2);">CSV URL (GitHub raw / SharePoint / Google Sheets)</label>
+    <div class="url-row">
+      <input type="url" id="csv-url" placeholder="https://raw.githubusercontent.com/…/assets.csv">
+      <button onclick="loadFromURL()">Fetch</button>
+    </div>
+    <div id="url-status" style="font-size:11px;color:var(--text-3);margin-top:6px;min-height:16px;"></div>
+  </div>
+
+  <div class="setup-card" id="session-card" style="display:none;">
+    <div class="setup-title">Resume Previous Session</div>
+    <div class="setup-sub" id="session-info"></div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="btn btn-primary" onclick="resumeSession()" style="flex:1;">Resume</button>
+      <button class="btn btn-outline" onclick="clearSession()" style="flex:1;">Start Fresh</button>
+    </div>
+  </div>
+
+  <div class="setup-card" style="background:none;border:none;box-shadow:none;padding-top:0;">
+    <div style="font-size:11px;color:var(--text-3);line-height:1.6;">
+      <strong style="color:var(--text-2);">QR format detected:</strong> <span class="chip">611 100088446-1</span><br>
+      The prefix before the space is stripped — only the Asset Number is looked up in the <strong>Asset Number</strong> column of your FA list.
+    </div>
+  </div>
+</div>
+
+<!-- ── SCAN PAGE ── -->
+<div id="page-scan" class="page">
+  <div class="scan-wrap">
+    <video id="scan-video" autoplay muted playsinline></video>
+    <canvas id="scan-canvas"></canvas>
+    <div class="scan-overlay">
+      <div class="scan-frame">
+        <div class="scan-corner-bl"></div>
+        <div class="scan-corner-br"></div>
+        <div class="scan-laser"></div>
+      </div>
+    </div>
+    <div class="scan-hint">Point camera at asset QR label</div>
+  </div>
+
+  <div class="scan-status idle" id="scan-status">
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span>Ready — waiting for QR code…</span>
+  </div>
+
+  <div id="result-area"></div>
+</div>
+
+<!-- ── LIST PAGE ── -->
+<div id="page-list" class="page">
+  <div class="list-filter">
+    <input type="search" id="list-search" placeholder="Search asset no., description…" oninput="renderList()">
+    <select id="list-filter" onchange="renderList()">
+      <option value="">All</option>
+      <option value="ok">Verified</option>
+      <option value="flag">Flagged</option>
+      <option value="bad">Missing</option>
+      <option value="none">Pending</option>
+    </select>
+  </div>
+  <div class="asset-list" id="asset-list"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-tab" id="tab-setup" onclick="switchTab('setup')">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Load
+  </button>
+  <button class="nav-tab" id="tab-scan" onclick="switchTab('scan')">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Scan
+  </button>
+  <button class="nav-tab" id="tab-list" onclick="switchTab('list')">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+    <span id="list-count-badge">List</span>
+  </button>
+  <button class="nav-tab" onclick="exportReport()">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export
+  </button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+let assets       = [];   // full FA list from CSV
+let results      = {};   // { assetNo: { status:'ok'|'flag'|'bad', note:'', scannedAt:'', raw:'' } }
+let scanActive   = false;
+let camStream    = null;
+let scanAF       = null;
+let lastScanned  = '';
+let lastScannedT = 0;
+
+const STORE_ASSETS  = 'av_assets';
+const STORE_RESULTS = 'av_results';
+const STORE_URL     = 'av_last_url';
+
+// ── CSV PARSER ───────────────────────────────────────────────────────────────
+function parseCSVLine(line) {
+  const cols = []; let cur = '', inQ = false;
+  for(let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){cols.push(cur.trim());cur='';}
+    else cur+=c;
+  }
+  cols.push(cur.trim());
+  return cols;
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if(lines.length < 2) return [];
+  const headers = parseCSVLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const vals = parseCSVLine(line);
+    const obj  = {};
+    headers.forEach((h, i) => { obj[h.trim()] = (vals[i] || '').replace(/""/g, '"'); });
+    return obj;
+  }).filter(o => Object.values(o).some(v => v));
+}
+
+// ── QR ASSET NUMBER PARSER ───────────────────────────────────────────────────
+function hexDecode(str) {
+  // Decode hex string to ASCII text: "363131..." → "611 ..."
+  if(str.length % 2 !== 0 || !/^[0-9A-Fa-f]+$/.test(str)) return null;
+  let out = '';
+  for(let i = 0; i < str.length; i += 2)
+    out += String.fromCharCode(parseInt(str.substr(i, 2), 16));
+  // Only return if result looks like printable text
+  return /^[\x20-\x7E]+$/.test(out) ? out : null;
+}
+
+function normalizeAssetNo(raw) {
+  // Strip prefix (e.g. "611 ") before first space
+  const spaceIdx = raw.indexOf(' ');
+  let no = spaceIdx > 0 ? raw.slice(spaceIdx + 1).trim() : raw.trim();
+  // Normalize leading zeros and suffix: "000100088446-0001" → "100088446-1"
+  const dashIdx = no.lastIndexOf('-');
+  if(dashIdx > 0) {
+    const main   = String(parseInt(no.slice(0, dashIdx), 10));   // strip leading zeros
+    const suffix = String(parseInt(no.slice(dashIdx + 1), 10));  // strip leading zeros
+    no = `${main}-${suffix}`;
+  } else {
+    no = String(parseInt(no, 10) || no);
+  }
+  return no;
+}
+
+function parseAssetNo(qrText) {
+  let t = qrText.trim();
+  // Try hex decode first (NUS QR codes are hex-encoded)
+  const decoded = hexDecode(t);
+  if(decoded) t = decoded;
+  return normalizeAssetNo(t);
+}
+
+function findAsset(assetNo) {
+  // Exact match first, then normalized match
+  return assets.find(a => a.assetNo === assetNo)
+      || assets.find(a => normalizeAssetNo(a.assetNo) === assetNo);
+}
+
+// ── LOAD ASSET LIST ──────────────────────────────────────────────────────────
+function loadCSVFile(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = ev => processAssets(ev.target.result, file.name);
+  r.readAsText(file);
+  e.target.value = '';
+}
+
+async function loadFromURL() {
+  const url = document.getElementById('csv-url').value.trim();
+  if(!url) return;
+  const st = document.getElementById('url-status');
+  st.textContent = 'Fetching…'; st.style.color = 'var(--text-3)';
+  try {
+    const resp = await fetch(url);
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    localStorage.setItem(STORE_URL, url);
+    processAssets(text, url.split('/').pop());
+    st.textContent = 'Loaded successfully.'; st.style.color = 'var(--success)';
+  } catch(err) {
+    st.textContent = 'Failed: ' + err.message; st.style.color = 'var(--danger)';
+  }
+}
+
+function processAssets(csvText, sourceName) {
+  const rows = parseCSV(csvText);
+  if(!rows.length) { toast('No data found in file', 'bad'); return; }
+
+  // Auto-detect asset number column
+  const assetCol = ['Asset Number','asset number','ASSET NUMBER','ECC Asset Number','Asset No','AssetNo']
+    .find(k => k in rows[0]) || Object.keys(rows[0])[1];
+
+  assets = rows.map(r => ({
+    assetNo    : (r[assetCol] || '').trim(),
+    description: r['Description'] || r['description'] || r['Acct Dtrmn Name'] || '',
+    custodian  : r['User/Custodian ID'] || r['Custodian'] || '',
+    location   : r['Section/Room Desc'] || r['Location'] || r['Section/Room Description'] || '',
+    serial     : r['Serial number'] || r['Serial Number'] || r['Serial'] || '',
+    office     : r['Office'] || r['Office '] || '',
+    department : r['Department'] || r['Department '] || '',
+    deviceType : r['Device Type'] || r['Asset Type'] || r['Asset Class'] || '',
+    _raw       : r
+  })).filter(a => a.assetNo);
+
+  localStorage.setItem(STORE_ASSETS, JSON.stringify(assets));
+  updateProgress();
+  updateHeader(sourceName);
+  document.getElementById('progress-bar').style.display = '';
+  toast(`Loaded ${assets.length} assets from ${sourceName}`, 'ok');
+  switchTab('scan');
+}
+
+// ── SESSION ──────────────────────────────────────────────────────────────────
+function loadSession() {
+  try { assets  = JSON.parse(localStorage.getItem(STORE_ASSETS)  || '[]'); } catch(e){}
+  try { results = JSON.parse(localStorage.getItem(STORE_RESULTS) || '{}'); } catch(e){}
+  if(assets.length) {
+    updateProgress();
+    updateHeader('saved session');
+    document.getElementById('progress-bar').style.display = '';
+    const done   = Object.keys(results).length;
+    const card   = document.getElementById('session-card');
+    const info   = document.getElementById('session-info');
+    info.textContent = `${assets.length} assets loaded, ${done} verified/flagged. Continue where you left off?`;
+    card.style.display = '';
+  }
+}
+
+function resumeSession() { switchTab('scan'); }
+
+function clearSession() {
+  results = {};
+  localStorage.removeItem(STORE_RESULTS);
+  updateProgress();
+  document.getElementById('session-card').style.display = 'none';
+  toast('Session cleared — start fresh', 'ok');
+}
+
+function saveResults() {
+  localStorage.setItem(STORE_RESULTS, JSON.stringify(results));
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+function updateProgress() {
+  const total  = assets.length; if(!total) return;
+  const ok     = Object.values(results).filter(r=>r.status==='ok').length;
+  const flag   = Object.values(results).filter(r=>r.status==='flag').length;
+  const bad    = Object.values(results).filter(r=>r.status==='bad').length;
+  const done   = ok + flag + bad;
+  const pct    = Math.round(done / total * 100);
+  document.getElementById('prog-fill').style.width  = pct + '%';
+  document.getElementById('prog-pct').textContent   = pct + '%';
+  document.getElementById('prog-label').textContent = `${done} of ${total} assets checked`;
+  document.getElementById('stat-ok').textContent    = ok;
+  document.getElementById('stat-flag').textContent  = flag;
+  document.getElementById('stat-miss').textContent  = bad;
+  document.getElementById('stat-pend').textContent  = total - done;
+  document.getElementById('list-count-badge').textContent = `List (${total - done} left)`;
+}
+
+function updateHeader(src) {
+  document.getElementById('header-sub').textContent = `${assets.length} assets · ${src}`;
+}
+
+// ── CAMERA / QR SCAN ─────────────────────────────────────────────────────────
+async function startCamera() {
+  if(camStream) return;
+  if(!assets.length) { toast('Load the asset list first', 'bad'); switchTab('setup'); return; }
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    const video = document.getElementById('scan-video');
+    video.srcObject = camStream;
+    await video.play();
+    scanActive = true;
+    scanLoop();
+  } catch(err) {
+    document.getElementById('scan-status').innerHTML = `<span style="color:var(--danger);">Camera denied — allow camera access in browser settings.</span>`;
+  }
+}
+
+function stopCamera() {
+  scanActive = false;
+  if(scanAF) { cancelAnimationFrame(scanAF); scanAF = null; }
+  if(camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  document.getElementById('scan-video').srcObject = null;
+}
+
+function scanLoop() {
+  if(!scanActive) return;
+  const video  = document.getElementById('scan-video');
+  const canvas = document.getElementById('scan-canvas');
+  if(video.readyState === video.HAVE_ENOUGH_DATA) {
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    const img  = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+    if(code) {
+      const raw     = code.data.trim();
+      const assetNo = parseAssetNo(raw);
+      const now     = Date.now();
+      // Debounce — same code within 4 seconds
+      if(raw !== lastScanned || now - lastScannedT > 4000) {
+        lastScanned  = raw;
+        lastScannedT = now;
+        handleScan(raw, assetNo);
+      }
+    }
+  }
+  scanAF = requestAnimationFrame(scanLoop);
+}
+
+function handleScan(rawQR, assetNo) {
+  const asset = findAsset(assetNo);
+  const st    = document.getElementById('scan-status');
+
+  // Vibrate on scan
+  if(navigator.vibrate) navigator.vibrate(60);
+
+  if(asset) {
+    st.className = 'scan-status ok';
+    st.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Found: <strong>${assetNo}</strong></span>`;
+    showResult(asset, rawQR);
+  } else {
+    st.className = 'scan-status warn';
+    st.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Not in list: <strong>${assetNo}</strong> (QR: ${rawQR})</span>`;
+    showNotFound(assetNo, rawQR);
+  }
+}
+
+function showResult(asset, rawQR) {
+  const existing = results[asset.assetNo] || {};
+  const status   = existing.status || '';
+
+  const rows = [
+    ['Description',  asset.description],
+    ['Custodian',    asset.custodian],
+    ['Location',     asset.location],
+    ['Serial No.',   asset.serial],
+    ['Office',       asset.office],
+    ['Department',   asset.department],
+    ['Device Type',  asset.deviceType],
+  ].filter(([,v]) => v);
+
+  document.getElementById('result-area').innerHTML = `
+    <div class="result-card ${status||'ok'}" id="rc">
+      <div class="result-header">
+        <div class="result-icon">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div>
+          <div class="result-asset">${asset.assetNo}</div>
+          <div class="result-desc">${asset.description || '—'}</div>
+        </div>
+      </div>
+      <div class="result-body">
+        ${rows.map(([k,v]) => `<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${v}</span></div>`).join('')}
+      </div>
+      <div class="action-row">
+        <button class="action-btn ok  ${status==='ok'  ?'active':''}" onclick="markAsset('${asset.assetNo}','ok',  '${escJ(rawQR)}')">✓ Verified</button>
+        <button class="action-btn flag ${status==='flag'?'active':''}" onclick="markAsset('${asset.assetNo}','flag','${escJ(rawQR)}')">⚠ Flagged</button>
+        <button class="action-btn bad  ${status==='bad' ?'active':''}" onclick="markAsset('${asset.assetNo}','bad', '${escJ(rawQR)}')">✗ Missing</button>
+      </div>
+      <div class="note-row">
+        <input type="text" placeholder="Add note (optional)" value="${escH(existing.note||'')}" oninput="updateNote('${asset.assetNo}',this.value)">
+      </div>
+    </div>`;
+
+  // Auto-mark as verified if not already marked
+  if(!existing.status) markAsset(asset.assetNo, 'ok', rawQR, true);
+}
+
+function showNotFound(assetNo, rawQR) {
+  document.getElementById('result-area').innerHTML = `
+    <div class="result-card warn">
+      <div class="result-header">
+        <div class="result-icon">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <div class="result-asset">${assetNo}</div>
+          <div class="result-desc">Not found in current asset list</div>
+        </div>
+      </div>
+      <div class="result-body">
+        <div class="result-row"><span class="result-key">QR raw text</span><span class="result-val">${rawQR}</span></div>
+        <div class="result-row"><span class="result-key">Parsed as</span><span class="result-val">${assetNo}</span></div>
+      </div>
+      <div class="action-row">
+        <button class="action-btn flag" onclick="markUnknown('${escJ(assetNo)}','${escJ(rawQR)}','flag')">⚠ Flag it</button>
+        <button class="action-btn bad"  onclick="markUnknown('${escJ(assetNo)}','${escJ(rawQR)}','bad')">✗ Mark missing</button>
+      </div>
+      <div class="note-row">
+        <input type="text" placeholder="Add note" oninput="updateNote('${escJ(assetNo)}',this.value)">
+      </div>
+    </div>`;
+}
+
+function markAsset(assetNo, status, rawQR, silent) {
+  results[assetNo] = {
+    status,
+    note    : results[assetNo]?.note || '',
+    scannedAt: new Date().toISOString(),
+    raw     : rawQR
+  };
+  saveResults(); updateProgress();
+  if(!silent) toast({ ok:'✓ Verified', flag:'⚠ Flagged', bad:'✗ Marked missing' }[status], status==='ok'?'ok':'bad');
+  // Update button states
+  document.querySelectorAll('.action-btn').forEach(b => {
+    b.classList.remove('active');
+    if(b.classList.contains(status)) b.classList.add('active');
+  });
+}
+
+function markUnknown(assetNo, rawQR, status) {
+  markAsset(assetNo, status, rawQR);
+}
+
+function updateNote(assetNo, note) {
+  if(!results[assetNo]) results[assetNo] = { status:'', note:'', scannedAt:'', raw:'' };
+  results[assetNo].note = note;
+  saveResults();
+}
+
+// ── ASSET LIST ───────────────────────────────────────────────────────────────
+function renderList() {
+  const search = (document.getElementById('list-search')?.value || '').toLowerCase();
+  const filter = document.getElementById('list-filter')?.value || '';
+  const el     = document.getElementById('asset-list');
+
+  let list = assets.filter(a => {
+    const r = results[a.assetNo];
+    const st = r?.status || 'none';
+    if(filter && st !== filter) return false;
+    if(search && !`${a.assetNo} ${a.description} ${a.custodian} ${a.location}`.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  if(!list.length) {
+    el.innerHTML = '<div class="empty"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" opacity=".3"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg><p>No assets match</p></div>';
+    return;
+  }
+
+  const statusLabel = { ok:'Verified', flag:'Flagged', bad:'Missing', none:'Pending' };
+  const badgeClass  = { ok:'badge-ok', flag:'badge-flag', bad:'badge-bad', none:'badge-none' };
+  el.innerHTML = list.slice(0, 200).map(a => {
+    const r  = results[a.assetNo];
+    const st = r?.status || 'none';
+    return `<div class="asset-item" onclick="jumpToAsset('${escJ(a.assetNo)}')">
+      <div class="asset-dot ${st}"></div>
+      <div class="asset-info">
+        <div class="asset-no">${a.assetNo}</div>
+        <div class="asset-name">${a.description || '—'}</div>
+        <div class="asset-meta">${[a.custodian, a.location].filter(Boolean).join(' · ')}</div>
+      </div>
+      <span class="asset-badge ${badgeClass[st]}">${statusLabel[st]}</span>
+    </div>`;
+  }).join('');
+  if(list.length > 200) el.innerHTML += `<div class="loading">Showing 200 of ${list.length} — use search to narrow down</div>`;
+}
+
+function jumpToAsset(assetNo) {
+  const asset = findAsset(assetNo);
+  if(asset) { showResult(asset, assetNo); switchTab('scan'); }
+}
+
+// ── EXPORT ───────────────────────────────────────────────────────────────────
+function exportReport() {
+  if(!assets.length) { toast('No assets loaded', 'bad'); return; }
+  const cols = ['Asset Number','Description','Custodian','Location','Serial No','Office','Department','Device Type','Status','Note','Scanned At','QR Raw'];
+  const esc  = v => '"' + String(v||'').replace(/"/g,'""') + '"';
+  const rows = [cols.join(',')];
+  assets.forEach(a => {
+    const r = results[a.assetNo] || {};
+    rows.push([a.assetNo, a.description, a.custodian, a.location, a.serial,
+               a.office, a.department, a.deviceType,
+               r.status||'pending', r.note||'', r.scannedAt||'', r.raw||''].map(esc).join(','));
+  });
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `asset_verify_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast(`Exported ${assets.length} records`, 'ok');
+}
+
+// ── NAV / TABS ───────────────────────────────────────────────────────────────
+let currentTab = 'setup';
+
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab)?.classList.add('active');
+  currentTab = tab;
+  if(tab === 'scan')  { startCamera(); }
+  else               { stopCamera(); }
+  if(tab === 'list')  { renderList(); }
+}
+
+// ── THEME ─────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+  localStorage.setItem('av_theme', dark ? 'light' : 'dark');
+  document.getElementById('theme-icon').innerHTML = dark
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function escJ(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function escH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+let toastTimer;
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = type === 'ok' ? '#16a34a' : type === 'bad' ? '#dc2626' : '#1e293b';
+  el.style.opacity = '1';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.opacity = '0'; }, 2500);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+(function init() {
+  const theme = localStorage.getItem('av_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  if(theme === 'dark') {
+    document.getElementById('theme-icon').innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+  const savedUrl = localStorage.getItem(STORE_URL);
+  if(savedUrl) document.getElementById('csv-url').value = savedUrl;
+  loadSession();
+  document.getElementById('tab-setup').classList.add('active');
+})();
+</script>
+</body>
+</html>
