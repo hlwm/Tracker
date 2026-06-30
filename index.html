@@ -68,6 +68,8 @@ input:focus,select:focus{border-color:var(--accent);}
 .scan-laser.red{background:linear-gradient(90deg,transparent,#dc2626,transparent);}
 @keyframes laser{0%,100%{top:10%}50%{top:88%}}
 .scan-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:rgba(255,255,255,.75);font-size:12px;}
+.float-snap-btn{position:absolute;bottom:14px;right:14px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.92);border:none;display:none;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.4);cursor:pointer;z-index:10;}
+.float-snap-btn svg{width:24px;height:24px;color:#111;}
 .scan-mode-badge{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;}
 .scan-status{padding:12px 16px;min-height:56px;display:flex;align-items:center;gap:10px;font-size:14px;}
 .scan-status.idle{color:var(--text-3);}
@@ -272,8 +274,11 @@ input:focus,select:focus{border-color:var(--accent);}
     <div class="scan-overlay">
       <div class="scan-frame"><div class="scan-corner-bl"></div><div class="scan-corner-br"></div><div class="scan-laser"></div></div>
     </div>
-    <div class="scan-hint">Point at QR code or barcode</div>
+    <div class="scan-hint" id="scan-hint-text">Point at QR code or barcode</div>
     <div class="scan-mode-badge" id="scan-mode-badge">Loading…</div>
+    <button class="float-snap-btn" id="float-snap-btn" onclick="takeVerifyPhoto()" title="Take photo">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </button>
   </div>
   <div class="scan-status idle" id="scan-status">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -619,6 +624,8 @@ function takeVerifyPhoto(){
 function renderVerifyPhotoArea(){
   const area=document.getElementById('verify-photo-area');if(!area)return;
   const photo=currentAsset&&results[currentAsset.assetNo]?.photo;
+  const snapBtn=document.getElementById('float-snap-btn');
+  const hint=document.getElementById('scan-hint-text');
   if(photo){
     area.innerHTML=`<div class="photo-thumb-wrap">
       <img src="${photo}" alt="Asset photo">
@@ -628,8 +635,12 @@ function renderVerifyPhotoArea(){
         <button class="btn-remove-photo" onclick="removeVerifyPhoto()">Remove</button>
       </div>
     </div>`;
+    if(snapBtn)snapBtn.style.display='none';
+    if(hint)hint.textContent='Point at QR code or barcode';
   } else {
     area.innerHTML=`<button class="snap-btn" onclick="takeVerifyPhoto()">${CAMERA_SVG} Take Asset Photo</button>`;
+    if(snapBtn){snapBtn.style.display='flex';}
+    if(hint)hint.textContent='Tap 📷 to capture photo';
   }
 }
 function downloadVerifyPhoto(){
@@ -851,6 +862,8 @@ function retakeVerify(){
   const st=document.getElementById('scan-status');st.className='scan-status idle';
   st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Ready — waiting for QR or barcode…</span>`;
   lastScanned='';lastScannedT=0;
+  const snapBtn=document.getElementById('float-snap-btn');if(snapBtn)snapBtn.style.display='none';
+  const hint=document.getElementById('scan-hint-text');if(hint)hint.textContent='Point at QR code or barcode';
 }
 
 function markAsset(status,silent){
