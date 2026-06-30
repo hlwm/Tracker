@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Asset Tracker — Duke-NUS</title>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.1/umd/index.min.js"></script>
 <style>
 :root {
   --bg:       #f4f6f9;
@@ -82,7 +83,7 @@ input:focus,select:focus{border-color:var(--accent);}
 .url-row input{flex:1;}
 .url-row button{flex-shrink:0;padding:8px 14px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap;}
 
-/* SCAN PAGE */
+/* SCAN */
 .scan-wrap{position:relative;background:#000;overflow:hidden;}
 .scan-wrap video{width:100%;display:block;max-height:60vw;object-fit:cover;}
 .scan-wrap canvas{display:none;}
@@ -130,6 +131,9 @@ input:focus,select:focus{border-color:var(--accent);}
 .action-btn.active.bad {background:var(--danger);color:#fff;}
 .note-row{padding:0 14px 10px;background:var(--bg);}
 .note-row input{font-size:12px;padding:6px 10px;border-radius:6px;}
+.rescan-row{padding:8px 14px 12px;background:var(--bg);border-top:1px solid var(--border);text-align:center;}
+.rescan-btn{background:none;border:1.5px solid var(--border);color:var(--text-2);border-radius:8px;padding:7px 18px;font-size:12px;font-weight:600;cursor:pointer;}
+.rescan-btn:hover{background:var(--bg);border-color:var(--accent);color:var(--accent);}
 
 /* LIST PAGE */
 .list-filter{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
@@ -248,9 +252,8 @@ input:focus,select:focus{border-color:var(--accent);}
 
   <div class="setup-card" style="background:none;border:none;box-shadow:none;padding-top:0;">
     <div style="font-size:11px;color:var(--text-3);line-height:1.6;">
-      <strong style="color:var(--text-2);">QR format detected:</strong> <span class="chip">611 100088446-1</span><br>
-      The prefix before the space is stripped — only the Asset Number is matched in your FA list.<br>
-      <strong style="color:var(--text-2);">Barcodes:</strong> <span id="barcode-support-note">Checking browser support…</span>
+      <strong style="color:var(--text-2);">QR / Barcode support:</strong> <span id="barcode-support-note">Initialising…</span><br>
+      <strong style="color:var(--text-2);">QR format:</strong> <span class="chip">611 100088446-1</span> — prefix before space is stripped automatically.
     </div>
   </div>
 </div>
@@ -267,8 +270,8 @@ input:focus,select:focus{border-color:var(--accent);}
         <div class="scan-laser"></div>
       </div>
     </div>
-    <div class="scan-hint" id="scan-hint">Point camera at QR code or barcode</div>
-    <div class="scan-mode-badge" id="scan-mode-badge">QR only</div>
+    <div class="scan-hint">Point camera at QR code or barcode</div>
+    <div class="scan-mode-badge" id="scan-mode-badge">Loading…</div>
   </div>
 
   <div class="scan-status idle" id="scan-status">
@@ -292,7 +295,7 @@ input:focus,select:focus{border-color:var(--accent);}
       </div>
     </div>
     <div class="scan-hint">Scan QR code or barcode of item being disposed</div>
-    <div class="scan-mode-badge" id="dispose-mode-badge">QR only</div>
+    <div class="scan-mode-badge" id="dispose-mode-badge">Loading…</div>
   </div>
 
   <div class="scan-status idle" id="dispose-status">
@@ -376,37 +379,71 @@ let dispScanAF     = null;
 let lastDispScanned  = '';
 let lastDispScannedT = 0;
 let barcodeDetector  = null;
+let zxingReader      = null;
 
 const STORE_ASSETS  = 'av_assets';
 const STORE_RESULTS = 'av_results';
 const STORE_URL     = 'av_last_url';
 const STORE_DISPOSE = 'av_dispose';
 
-// ── BARCODE DETECTOR INIT ────────────────────────────────────────────────────
-async function initBarcodeDetector() {
+// ── SCANNER INIT (BarcodeDetector → ZXing → jsQR fallback) ──────────────────
+async function initScanner() {
   const noteEl = document.getElementById('barcode-support-note');
+
+  // 1. Try BarcodeDetector (Chrome Android / macOS)
   if('BarcodeDetector' in window) {
     try {
       const formats = await BarcodeDetector.getSupportedFormats();
       barcodeDetector = new BarcodeDetector({ formats });
-      const badge = 'QR + Barcode';
-      document.getElementById('scan-mode-badge').textContent    = badge;
-      document.getElementById('dispose-mode-badge').textContent = badge;
-      noteEl.textContent = 'Supported — Code 128, Code 39, EAN, and more.';
+      setScanBadge('QR + Barcode');
+      noteEl.textContent = 'Full support via browser API (Code 128, Code 39, EAN, QR…)';
       noteEl.style.color = 'var(--success)';
-    } catch(e) {
-      noteEl.textContent = 'Not available in this browser (use Chrome on Android for barcode support).';
-    }
-  } else {
-    noteEl.textContent = 'Not available in this browser (use Chrome on Android for barcode support).';
+      return;
+    } catch(e) {}
   }
+
+  // 2. ZXing library (iPhone Safari, Firefox, all other browsers)
+  if(typeof ZXing !== 'undefined') {
+    try {
+      const hints = new Map();
+      hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+        ZXing.BarcodeFormat.QR_CODE,
+        ZXing.BarcodeFormat.CODE_128,
+        ZXing.BarcodeFormat.CODE_39,
+        ZXing.BarcodeFormat.CODE_93,
+        ZXing.BarcodeFormat.EAN_13,
+        ZXing.BarcodeFormat.EAN_8,
+        ZXing.BarcodeFormat.UPC_A,
+        ZXing.BarcodeFormat.UPC_E,
+        ZXing.BarcodeFormat.ITF,
+        ZXing.BarcodeFormat.DATA_MATRIX,
+      ]);
+      zxingReader = new ZXing.BrowserMultiFormatReader(hints);
+      setScanBadge('QR + Barcode');
+      noteEl.textContent = 'Full support via ZXing (Code 128, Code 39, EAN, QR…)';
+      noteEl.style.color = 'var(--success)';
+      return;
+    } catch(e) {
+      noteEl.textContent = 'ZXing failed to load: ' + e.message;
+    }
+  }
+
+  // 3. jsQR only fallback
+  setScanBadge('QR only');
+  noteEl.textContent = 'QR codes only — barcode library unavailable.';
 }
 
-// ── SHARED FRAME PROCESSOR ───────────────────────────────────────────────────
+function setScanBadge(text) {
+  document.getElementById('scan-mode-badge').textContent    = text;
+  document.getElementById('dispose-mode-badge').textContent = text;
+}
+
+// ── SHARED FRAME DECODER ─────────────────────────────────────────────────────
 async function processFrame(videoId, canvasId) {
   const video = document.getElementById(videoId);
   if(!video || video.readyState < video.HAVE_ENOUGH_DATA) return null;
 
+  // BarcodeDetector path
   if(barcodeDetector) {
     try {
       const codes = await barcodeDetector.detect(video);
@@ -414,7 +451,15 @@ async function processFrame(videoId, canvasId) {
     } catch(e) { return null; }
   }
 
-  // jsQR fallback (QR codes only)
+  // ZXing path — decodes directly from the video element
+  if(zxingReader) {
+    try {
+      const result = zxingReader.decode(video);
+      return result.getText();
+    } catch(e) { return null; } // NotFoundException is normal when no code visible
+  }
+
+  // jsQR fallback — QR only, via canvas
   const canvas = document.getElementById(canvasId);
   canvas.width  = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -450,7 +495,7 @@ function parseCSV(text) {
   }).filter(o => Object.values(o).some(v => v));
 }
 
-// ── QR / BARCODE ASSET NUMBER PARSER ─────────────────────────────────────────
+// ── QR / BARCODE ASSET NUMBER NORMALISER ─────────────────────────────────────
 function hexDecode(str) {
   if(str.length % 2 !== 0 || !/^[0-9A-Fa-f]+$/.test(str)) return null;
   let out = '';
@@ -460,7 +505,6 @@ function hexDecode(str) {
 }
 
 function normalizeAssetNo(raw) {
-  // Strip "611 " style prefix before the asset number
   const spaceIdx = raw.indexOf(' ');
   let no = spaceIdx > 0 ? raw.slice(spaceIdx + 1).trim() : raw.trim();
   const dashIdx = no.lastIndexOf('-');
@@ -610,7 +654,7 @@ function updateHeader(src) {
   document.getElementById('header-sub').textContent = `${assets.length} assets · ${src}`;
 }
 
-// ── CAMERA / SCAN — VERIFY ────────────────────────────────────────────────────
+// ── CAMERA — VERIFY ───────────────────────────────────────────────────────────
 async function startCamera() {
   if(camStream) return;
   if(!assets.length) { toast('Load the asset list first', 'bad'); switchTab('setup'); return; }
@@ -661,7 +705,7 @@ function handleScan(rawQR, assetNo) {
     showResult(asset, rawQR);
   } else {
     st.className = 'scan-status warn';
-    st.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Not in list: <strong>${assetNo}</strong> (raw: ${rawQR})</span>`;
+    st.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Not in list: <strong>${assetNo}</strong></span>`;
     showNotFound(assetNo, rawQR);
   }
 }
@@ -669,7 +713,6 @@ function handleScan(rawQR, assetNo) {
 function showResult(asset, rawQR) {
   const existing = results[asset.assetNo] || {};
   const status   = existing.status || '';
-
   const rows = [
     ['Description',  asset.description],
     ['Custodian',    asset.custodian],
@@ -703,6 +746,12 @@ function showResult(asset, rawQR) {
       <div class="note-row">
         <input type="text" placeholder="Add note (optional)" value="${escH(existing.note||'')}" oninput="updateNote('${asset.assetNo}',this.value)">
       </div>
+      <div class="rescan-row">
+        <button class="rescan-btn" onclick="retakeVerify()">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          Rescan
+        </button>
+      </div>
     </div>`;
 
   if(!existing.status) markAsset(asset.assetNo, 'ok', rawQR, true);
@@ -731,7 +780,21 @@ function showNotFound(assetNo, rawQR) {
       <div class="note-row">
         <input type="text" placeholder="Add note" oninput="updateNote('${escJ(assetNo)}',this.value)">
       </div>
+      <div class="rescan-row">
+        <button class="rescan-btn" onclick="retakeVerify()">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          Rescan
+        </button>
+      </div>
     </div>`;
+}
+
+function retakeVerify() {
+  document.getElementById('result-area').innerHTML = '';
+  const st = document.getElementById('scan-status');
+  st.className = 'scan-status idle';
+  st.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Ready — waiting for QR code or barcode…</span>`;
+  lastScanned = ''; lastScannedT = 0;
 }
 
 function markAsset(assetNo, status, rawQR, silent) {
@@ -757,7 +820,7 @@ function updateNote(assetNo, note) {
   saveResults();
 }
 
-// ── CAMERA / SCAN — DISPOSE ───────────────────────────────────────────────────
+// ── CAMERA — DISPOSE ──────────────────────────────────────────────────────────
 async function startDisposeCamera() {
   if(dispCamStream) return;
   if(!assets.length) { toast('Load the asset list first', 'bad'); switchTab('setup'); return; }
@@ -846,6 +909,12 @@ function showDisposeResult(asset, rawQR) {
              <button class="dispose-confirm-btn" onclick="confirmDispose('${escJ(asset.assetNo)}','${escJ(rawQR)}')">Confirm Disposal</button>
            </div>`
       }
+      <div class="rescan-row">
+        <button class="rescan-btn" onclick="retakeDispose()">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          Rescan
+        </button>
+      </div>
     </div>`;
 }
 
@@ -868,7 +937,21 @@ function showDisposeNotFound(assetNo, rawQR) {
         <input type="text" id="dispose-note" placeholder="Reason / note (optional)" style="font-size:12px;padding:6px 10px;border-radius:6px;">
         <button class="dispose-confirm-btn" onclick="confirmDispose('${escJ(assetNo)}','${escJ(rawQR)}')">Record Disposal</button>
       </div>
+      <div class="rescan-row">
+        <button class="rescan-btn" onclick="retakeDispose()">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          Rescan
+        </button>
+      </div>
     </div>`;
+}
+
+function retakeDispose() {
+  document.getElementById('dispose-result-area').innerHTML = '';
+  const st = document.getElementById('dispose-status');
+  st.className = 'scan-status idle';
+  st.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg><span>Disposal mode — scan item to record…</span>`;
+  lastDispScanned = ''; lastDispScannedT = 0;
 }
 
 function confirmDispose(assetNo, rawQR) {
@@ -929,11 +1012,11 @@ function exportDisposal() {
 
 // ── ASSET LIST ───────────────────────────────────────────────────────────────
 function renderList() {
-  const search        = (document.getElementById('list-search')?.value || '').toLowerCase();
-  const statusFilter  = document.getElementById('list-status-filter')?.value || '';
-  const officeFilter  = document.getElementById('list-office-filter')?.value || '';
-  const classFilter   = document.getElementById('list-class-filter')?.value || '';
-  const el            = document.getElementById('asset-list');
+  const search       = (document.getElementById('list-search')?.value || '').toLowerCase();
+  const statusFilter = document.getElementById('list-status-filter')?.value || '';
+  const officeFilter = document.getElementById('list-office-filter')?.value || '';
+  const classFilter  = document.getElementById('list-class-filter')?.value || '';
+  const el           = document.getElementById('asset-list');
 
   let list = assets.filter(a => {
     const r  = results[a.assetNo];
@@ -953,8 +1036,8 @@ function renderList() {
   const statusLabel = { ok:'Verified', flag:'Flagged', bad:'Missing', none:'Pending' };
   const badgeClass  = { ok:'badge-ok', flag:'badge-flag', bad:'badge-bad', none:'badge-none' };
   el.innerHTML = list.slice(0, 200).map(a => {
-    const r  = results[a.assetNo];
-    const st = r?.status || 'none';
+    const r    = results[a.assetNo];
+    const st   = r?.status || 'none';
     const meta = [a.office, a.assetClass, a.location].filter(Boolean).join(' · ');
     return `<div class="asset-item" onclick="jumpToAsset('${escJ(a.assetNo)}')">
       <div class="asset-dot ${st}"></div>
@@ -991,7 +1074,7 @@ function exportReport() {
   a.href     = URL.createObjectURL(blob);
   a.download = `asset_verify_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
-  toast(`Exported ${assets.length} records — saved to Downloads folder`, 'ok');
+  toast(`Exported ${assets.length} records — saved to Downloads`, 'ok');
 }
 
 // ── NAV / TABS ───────────────────────────────────────────────────────────────
@@ -1043,7 +1126,7 @@ function toast(msg, type) {
   }
   const savedUrl = localStorage.getItem(STORE_URL);
   if(savedUrl) document.getElementById('csv-url').value = savedUrl;
-  initBarcodeDetector();
+  initScanner();
   loadSession();
   document.getElementById('tab-setup').classList.add('active');
 })();
