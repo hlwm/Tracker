@@ -202,7 +202,10 @@ input:focus,select:focus{border-color:var(--accent);}
 .sheet-row{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;}
 .sheet-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;}
 .sheet-value{font-size:13px;color:var(--text);}
-.sheet-photo{width:100%;border-radius:10px;margin-top:10px;object-fit:cover;max-height:220px;}
+.sheet-photo{width:100%;border-radius:10px;margin-top:6px;object-fit:cover;max-height:160px;}
+.sheet-photo-block{margin-bottom:10px;}
+.sheet-photo-label{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.sheet-photo-save{font-size:11px;padding:4px 10px;margin-top:5px;border-radius:6px;background:var(--bg);border:1px solid var(--border);color:var(--text-2);cursor:pointer;}
 .sheet-actions{display:flex;gap:8px;margin-top:14px;}
 
 </style>
@@ -295,8 +298,11 @@ input:focus,select:focus{border-color:var(--accent);}
     <div class="scan-overlay">
       <div class="scan-frame"><div class="scan-corner-bl"></div><div class="scan-corner-br"></div><div class="scan-laser red"></div></div>
     </div>
-    <div class="scan-hint">Scan item being disposed</div>
+    <div class="scan-hint" id="disp-hint-text">Scan item being disposed</div>
     <div class="scan-mode-badge" id="dispose-mode-badge">Loading…</div>
+    <button class="float-snap-btn" id="float-disp-snap-btn" onclick="floatDisposeSnap()" title="Take photo" style="display:none;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </button>
   </div>
   <div class="scan-status idle" id="dispose-status">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -655,8 +661,31 @@ function removeVerifyPhoto(){
 }
 
 // ── DISPOSE PHOTO ─────────────────────────────────────────────────────────────
+function updateDisposeSnapBtn(){
+  const btn=document.getElementById('float-disp-snap-btn');
+  const hint=document.getElementById('disp-hint-text');
+  if(!currentDisposeAssetNo){
+    if(btn)btn.style.display='none';
+    if(hint)hint.textContent='Scan item being disposed';
+    return;
+  }
+  if(!pendingDisposePhoto){
+    if(btn)btn.style.display='flex';
+    if(hint)hint.textContent='Tap 📷 for asset photo';
+  } else if(!pendingSanitizePhoto){
+    if(btn)btn.style.display='flex';
+    if(hint)hint.textContent='Tap 📷 for sanitization proof';
+  } else {
+    if(btn)btn.style.display='none';
+    if(hint)hint.textContent='Both photos captured';
+  }
+}
+function floatDisposeSnap(){
+  if(!pendingDisposePhoto)takeDisposePhoto();
+  else takeSanitizePhoto();
+}
 function takeDisposePhoto(){
-  const save=dataUrl=>{pendingDisposePhoto=dataUrl;renderDisposePhotoArea();toast('Asset photo saved','ok');};
+  const save=dataUrl=>{pendingDisposePhoto=dataUrl;renderDisposePhotoArea();updateDisposeSnapBtn();toast('Asset photo saved','ok');};
   if(!snapshotFromVideo('dispose-video',save))openCamera(save);
 }
 function renderDisposePhotoArea(){
@@ -666,7 +695,7 @@ function renderDisposePhotoArea(){
       <img src="${pendingDisposePhoto}" alt="Asset photo">
       <div class="photo-thumb-actions">
         <button class="btn-save-photo" onclick="downloadDataUrl(pendingDisposePhoto,'dispose_asset.jpg')">Save</button>
-        <button class="btn-remove-photo" onclick="pendingDisposePhoto=null;renderDisposePhotoArea()">Remove</button>
+        <button class="btn-remove-photo" onclick="pendingDisposePhoto=null;renderDisposePhotoArea();updateDisposeSnapBtn()">Remove</button>
       </div>
     </div>`;
   } else {
@@ -676,7 +705,7 @@ function renderDisposePhotoArea(){
 
 // ── SANITIZE PHOTO ────────────────────────────────────────────────────────────
 function takeSanitizePhoto(){
-  const save=dataUrl=>{pendingSanitizePhoto=dataUrl;renderSanitizePhotoArea();toast('Proof photo saved','ok');};
+  const save=dataUrl=>{pendingSanitizePhoto=dataUrl;renderSanitizePhotoArea();updateDisposeSnapBtn();toast('Proof photo saved','ok');};
   if(!snapshotFromVideo('dispose-video',save))openCamera(save);
 }
 function renderSanitizePhotoArea(){
@@ -686,7 +715,7 @@ function renderSanitizePhotoArea(){
       <img src="${pendingSanitizePhoto}" alt="Sanitization proof">
       <div class="photo-thumb-actions">
         <button class="btn-save-photo" onclick="downloadDataUrl(pendingSanitizePhoto,'sanitize_proof.jpg')">Save</button>
-        <button class="btn-remove-photo" onclick="pendingSanitizePhoto=null;renderSanitizePhotoArea()">Remove</button>
+        <button class="btn-remove-photo" onclick="pendingSanitizePhoto=null;renderSanitizePhotoArea();updateDisposeSnapBtn()">Remove</button>
       </div>
     </div>`;
   } else {
@@ -901,7 +930,7 @@ function disposeScanLoop(){
 function handleDisposeScan(rawQR,assetNo){
   const asset=findAsset(assetNo);const st=document.getElementById('dispose-status');
   if(navigator.vibrate)navigator.vibrate(60);
-  currentDisposeAssetNo=assetNo;pendingDisposePhoto=null;pendingSanitizePhoto=null;
+  currentDisposeAssetNo=assetNo;pendingDisposePhoto=null;pendingSanitizePhoto=null;updateDisposeSnapBtn();
   if(asset){
     st.className='scan-status ok';
     st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Found: <strong>${assetNo}</strong></span>`;
@@ -991,6 +1020,7 @@ function retakeDispose(){
   const st=document.getElementById('dispose-status');st.className='scan-status idle';
   st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg><span>Disposal mode — scan item to record…</span>`;
   lastDispScanned='';lastDispScannedT=0;
+  updateDisposeSnapBtn();
 }
 
 function confirmDispose(){
@@ -1112,8 +1142,9 @@ function jumpToAsset(assetNo){
   ].filter(x=>x&&x[1]).map(([l,v])=>`<div class="sheet-row"><div class="sheet-label">${l}</div><div class="sheet-value">${escH(v)}</div></div>`).join('');
   let photos='';
   if(st==='disposed'){
-    if(dispRec?.photo)photos+=`<div class="photo-section-title" style="padding:10px 0 4px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;">Device Photo</div><img class="sheet-photo" src="${dispRec.photo}" alt="Device photo">`;
-    if(dispRec?.sanitizePhoto)photos+=`<div class="photo-section-title" style="padding:10px 0 4px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;">Sanitization Photo</div><img class="sheet-photo" src="${dispRec.sanitizePhoto}" alt="Sanitization photo">`;
+    if(dispRec?.photo)photos+=`<div class="sheet-photo-block"><div class="sheet-photo-label">Device Photo</div><img class="sheet-photo" src="${dispRec.photo}" alt="Device photo"><br><button class="sheet-photo-save" onclick="downloadDataUrl(disposeResults.find(d=>d.assetNo==='${escJ(assetNo)}').photo,'device_${escJ(assetNo)}.jpg')">Save to device</button></div>`;
+    if(dispRec?.sanitizePhoto)photos+=`<div class="sheet-photo-block"><div class="sheet-photo-label">Sanitization Proof</div><img class="sheet-photo" src="${dispRec.sanitizePhoto}" alt="Sanitization proof"><br><button class="sheet-photo-save" onclick="downloadDataUrl(disposeResults.find(d=>d.assetNo==='${escJ(assetNo)}').sanitizePhoto,'sanitize_${escJ(assetNo)}.jpg')">Save to device</button></div>`;
+    if(!dispRec?.photo&&!dispRec?.sanitizePhoto)photos='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">No photos recorded</div>';
   } else {
     if(r.photo)photos=`<img class="sheet-photo" src="${r.photo}" alt="Asset photo">`;
   }
