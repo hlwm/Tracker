@@ -100,36 +100,38 @@ input:focus,select:focus{border-color:var(--accent);}
 .action-btn.active.bad {background:var(--danger);color:#fff;}
 .note-row{padding:0 14px 10px;background:var(--bg);}
 .note-row input{font-size:12px;padding:6px 10px;border-radius:6px;}
-.rescan-row{padding:8px 14px 12px;background:var(--bg);border-top:1px solid var(--border);text-align:center;}
-.rescan-btn{background:none;border:1.5px solid var(--border);color:var(--text-2);border-radius:8px;padding:7px 18px;font-size:12px;font-weight:600;cursor:pointer;}
-.rescan-btn:hover{background:var(--bg);border-color:var(--accent);color:var(--accent);}
 
-/* PHOTO */
-.photo-row{padding:8px 14px 10px;background:var(--bg);border-top:1px solid var(--border);}
-.photo-row-label{font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
-.photo-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;background:var(--surface);border:1.5px solid var(--border);color:var(--text-2);cursor:pointer;transition:all .15s;}
-.photo-btn:hover{border-color:var(--accent);color:var(--accent);}
-.photo-preview{margin-top:8px;position:relative;}
-.photo-preview img{width:100%;border-radius:8px;display:block;border:1px solid var(--border);}
-.photo-preview-actions{display:flex;gap:6px;margin-top:6px;}
-.photo-preview-actions button{flex:1;padding:6px;border-radius:6px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;}
-.photo-preview-actions .dl-btn{color:var(--accent);border-color:var(--accent);}
-.photo-preview-actions .rm-btn{color:var(--danger);border-color:var(--danger);}
+/* PHOTO SECTION */
+.photo-section{border-top:2px solid var(--border);background:var(--bg);padding:10px 14px 12px;}
+.photo-section-title{font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.snap-btn{width:100%;padding:12px;border-radius:10px;font-size:14px;font-weight:700;background:var(--surface);border:2px dashed var(--border);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
+.snap-btn:hover,.snap-btn:active{border-color:var(--accent);color:var(--accent);background:#eff6ff;}
+.snap-btn svg{width:22px;height:22px;flex-shrink:0;}
+.photo-thumb-wrap{margin-top:8px;}
+.photo-thumb-wrap img{width:100%;border-radius:8px;display:block;border:1px solid var(--border);}
+.photo-thumb-actions{display:flex;gap:8px;margin-top:6px;}
+.photo-thumb-actions button{flex:1;padding:7px;border-radius:7px;font-size:12px;font-weight:600;border:1.5px solid;cursor:pointer;background:none;}
+.btn-save-photo{border-color:var(--accent);color:var(--accent);}
+.btn-remove-photo{border-color:var(--danger);color:var(--danger);}
 
 /* SANITIZATION */
-.sanitize-section{padding:10px 14px 12px;background:var(--bg);border-top:1px solid var(--border);}
-.sanitize-title{font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
-.sanitize-opts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.sanitize-section{border-top:2px solid var(--border);background:var(--bg);padding:10px 14px 12px;}
+.sanitize-title{font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.sanitize-opts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
 .sanitize-opt{cursor:pointer;}
 .sanitize-opt input[type=radio]{display:none;}
-.sanitize-opt span{display:block;padding:6px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text-2);transition:all .15s;}
+.sanitize-opt span{display:block;padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text-2);transition:all .15s;}
 .sanitize-opt input:checked + span{background:var(--warning);color:#fff;border-color:var(--warning);}
 .sanitize-opt.destroy input:checked + span{background:var(--danger);border-color:var(--danger);}
-.sanitize-proof{margin-top:2px;}
 .s-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}
 .s-badge.na{background:var(--bg);color:var(--text-3);border:1px solid var(--border);}
 .s-badge.fmt{background:#fffbeb;color:var(--warning);}
 .s-badge.dest{background:#fef2f2;color:var(--danger);}
+
+/* RESCAN */
+.rescan-row{padding:8px 14px 12px;background:var(--bg);border-top:1px solid var(--border);text-align:center;}
+.rescan-btn{background:none;border:1.5px solid var(--border);color:var(--text-2);border-radius:8px;padding:7px 18px;font-size:12px;font-weight:600;cursor:pointer;}
+.rescan-btn:hover{border-color:var(--accent);color:var(--accent);}
 
 /* LIST */
 .list-filter{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
@@ -154,8 +156,8 @@ input:focus,select:focus{border-color:var(--accent);}
 .badge-bad{background:#fef2f2;color:var(--danger);}
 .badge-none{background:#f8fafc;color:var(--text-3);border:1px solid var(--border);}
 
-/* DISPOSE */
-.dispose-confirm-btn{width:100%;padding:10px;border-radius:8px;font-size:13px;font-weight:700;background:var(--danger);color:#fff;cursor:pointer;}
+/* DISPOSE LOG */
+.dispose-confirm-btn{width:100%;padding:10px;border-radius:8px;font-size:13px;font-weight:700;background:var(--danger);color:#fff;cursor:pointer;margin-top:4px;}
 .dispose-confirm-btn:hover{opacity:.9;}
 .already-disposed{padding:10px 14px;background:#fffbeb;font-size:12px;color:var(--warning);font-weight:500;}
 .dispose-log-header{padding:10px 16px 4px;display:flex;justify-content:space-between;align-items:center;}
@@ -188,16 +190,13 @@ input:focus,select:focus{border-color:var(--accent);}
     <div class="header-title">Asset Tracker</div>
     <div class="header-sub" id="header-sub">Duke-NUS — Load asset list to begin</div>
   </div>
-  <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+  <button class="icon-btn" onclick="toggleTheme()">
     <svg id="theme-icon" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   </button>
 </div>
 
 <div class="progress-bar" id="progress-bar" style="display:none;">
-  <div class="progress-label">
-    <span id="prog-label">Verification progress</span>
-    <span id="prog-pct">0%</span>
-  </div>
+  <div class="progress-label"><span id="prog-label">Verification progress</span><span id="prog-pct">0%</span></div>
   <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
   <div class="stat-row">
     <div class="stat ok"><div class="stat-n" id="stat-ok">0</div><div class="stat-l">Verified</div></div>
@@ -224,7 +223,6 @@ input:focus,select:focus{border-color:var(--accent);}
     </div>
     <div id="url-status" style="font-size:11px;color:var(--text-3);margin-top:6px;min-height:16px;"></div>
   </div>
-
   <div class="setup-card" id="session-card" style="display:none;">
     <div class="setup-title">Resume Previous Session</div>
     <div class="setup-sub" id="session-info"></div>
@@ -233,7 +231,6 @@ input:focus,select:focus{border-color:var(--accent);}
       <button class="btn btn-outline" onclick="clearSession()" style="flex:1;">Start Fresh</button>
     </div>
   </div>
-
   <div class="setup-card" style="background:none;border:none;box-shadow:none;padding-top:0;">
     <div style="font-size:11px;color:var(--text-3);line-height:1.7;">
       <strong style="color:var(--text-2);">Scanner:</strong> <span id="barcode-support-note">Initialising…</span><br>
@@ -326,141 +323,128 @@ input:focus,select:focus{border-color:var(--accent);}
 <div id="toast"></div>
 
 <script>
-// ── STATE ────────────────────────────────────────────────────────────────────
-let assets = [], results = {}, disposeResults = [];
-let scanActive=false, camStream=null, scanAF=null, lastScanned='', lastScannedT=0;
-let dispScanActive=false, dispCamStream=null, dispScanAF=null, lastDispScanned='', lastDispScannedT=0;
-let barcodeDetector=null, zxingReader=null;
-let pendingDisposePhoto=null, pendingSanitizePhoto=null;
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let assets=[],results={},disposeResults=[];
+let scanActive=false,camStream=null,scanAF=null,lastScanned='',lastScannedT=0;
+let dispScanActive=false,dispCamStream=null,dispScanAF=null,lastDispScanned='',lastDispScannedT=0;
+let barcodeDetector=null,zxingReader=null;
 
-const STORE_ASSETS='av_assets', STORE_RESULTS='av_results', STORE_URL='av_last_url', STORE_DISPOSE='av_dispose';
+// Current asset references — avoids all complex string escaping in onclick handlers
+let currentAsset=null;          // asset shown in verify result card
+let currentDisposeAssetNo=null; // asset shown in dispose result card
 
-// ── SCANNER INIT ─────────────────────────────────────────────────────────────
-async function initScanner() {
-  const noteEl = document.getElementById('barcode-support-note');
-  if('BarcodeDetector' in window) {
-    try {
-      const fmts = await BarcodeDetector.getSupportedFormats();
-      barcodeDetector = new BarcodeDetector({ formats: fmts });
+// Pending photos for the dispose flow (captured before confirming)
+let pendingDisposePhoto=null;
+let pendingSanitizePhoto=null;
+
+const STORE_ASSETS='av_assets',STORE_RESULTS='av_results',STORE_URL='av_last_url',STORE_DISPOSE='av_dispose';
+
+// ── SCANNER ───────────────────────────────────────────────────────────────────
+async function initScanner(){
+  const noteEl=document.getElementById('barcode-support-note');
+  if('BarcodeDetector' in window){
+    try{
+      const fmts=await BarcodeDetector.getSupportedFormats();
+      barcodeDetector=new BarcodeDetector({formats:fmts});
       setScanBadge('QR + Barcode');
-      noteEl.textContent = 'Full support via browser API.';
-      noteEl.style.color = 'var(--success)';
-      return;
-    } catch(e) {}
+      noteEl.textContent='Full support via browser API.';noteEl.style.color='var(--success)';return;
+    }catch(e){}
   }
-  if(typeof ZXing !== 'undefined') {
-    try {
-      const hints = new Map();
-      hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
-        ZXing.BarcodeFormat.QR_CODE, ZXing.BarcodeFormat.CODE_128,
-        ZXing.BarcodeFormat.CODE_39, ZXing.BarcodeFormat.CODE_93,
-        ZXing.BarcodeFormat.EAN_13,  ZXing.BarcodeFormat.EAN_8,
-        ZXing.BarcodeFormat.UPC_A,   ZXing.BarcodeFormat.UPC_E,
-        ZXing.BarcodeFormat.ITF,     ZXing.BarcodeFormat.DATA_MATRIX,
+  if(typeof ZXing!=='undefined'){
+    try{
+      const hints=new Map();
+      hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS,[
+        ZXing.BarcodeFormat.QR_CODE,ZXing.BarcodeFormat.CODE_128,
+        ZXing.BarcodeFormat.CODE_39,ZXing.BarcodeFormat.CODE_93,
+        ZXing.BarcodeFormat.EAN_13,ZXing.BarcodeFormat.EAN_8,
+        ZXing.BarcodeFormat.UPC_A,ZXing.BarcodeFormat.UPC_E,
+        ZXing.BarcodeFormat.ITF,ZXing.BarcodeFormat.DATA_MATRIX,
       ]);
-      zxingReader = new ZXing.BrowserMultiFormatReader(hints);
+      zxingReader=new ZXing.BrowserMultiFormatReader(hints);
       setScanBadge('QR + Barcode');
-      noteEl.textContent = 'Full support via ZXing — Code 128, Code 39, EAN, QR…';
-      noteEl.style.color = 'var(--success)';
-      return;
-    } catch(e) { noteEl.textContent = 'ZXing error: ' + e.message; }
+      noteEl.textContent='Full support via ZXing — Code 128, Code 39, EAN, QR…';noteEl.style.color='var(--success)';return;
+    }catch(e){noteEl.textContent='ZXing error: '+e.message;}
   }
-  setScanBadge('QR only');
-  noteEl.textContent = 'QR codes only — ZXing library unavailable.';
+  setScanBadge('QR only');noteEl.textContent='QR codes only.';
 }
-function setScanBadge(t){ document.getElementById('scan-mode-badge').textContent=t; document.getElementById('dispose-mode-badge').textContent=t; }
+function setScanBadge(t){document.getElementById('scan-mode-badge').textContent=t;document.getElementById('dispose-mode-badge').textContent=t;}
 
 // ── FRAME DECODER ─────────────────────────────────────────────────────────────
-async function processFrame(videoId, canvasId) {
-  const video = document.getElementById(videoId);
-  if(!video || video.readyState < video.HAVE_ENOUGH_DATA) return null;
-
-  if(barcodeDetector) {
-    try { const c = await barcodeDetector.detect(video); return c.length ? c[0].rawValue : null; }
-    catch(e){ return null; }
+async function processFrame(videoId,canvasId){
+  const video=document.getElementById(videoId);
+  if(!video||video.readyState<video.HAVE_ENOUGH_DATA)return null;
+  if(barcodeDetector){
+    try{const c=await barcodeDetector.detect(video);return c.length?c[0].rawValue:null;}catch(e){return null;}
   }
-
-  // Draw to canvas first — iOS Safari can't give ZXing/jsQR raw video pixels directly
-  const canvas = document.getElementById(canvasId);
-  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-  canvas.getContext('2d').drawImage(video, 0, 0);
-
-  if(zxingReader) {
-    try { return zxingReader.decodeFromCanvas(canvas).getText(); }
-    catch(e){ return null; }
+  // Draw to canvas ourselves — iOS Safari blocks ZXing/jsQR from reading video pixels directly
+  const canvas=document.getElementById(canvasId);
+  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+  canvas.getContext('2d').drawImage(video,0,0);
+  if(zxingReader){
+    try{return zxingReader.decodeFromCanvas(canvas).getText();}catch(e){return null;}
   }
-
-  const img = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-  const qr  = jsQR(img.data, img.width, img.height, { inversionAttempts:'dontInvert' });
-  return qr ? qr.data : null;
+  const img=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
+  const qr=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
+  return qr?qr.data:null;
 }
 
 // ── CSV ───────────────────────────────────────────────────────────────────────
-function parseCSVLine(line) {
-  const cols=[]; let cur='', inQ=false;
+function parseCSVLine(line){
+  const cols=[];let cur='',inQ=false;
   for(let i=0;i<line.length;i++){
     const c=line[i];
     if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
     else if(c===','&&!inQ){cols.push(cur.trim());cur='';}
     else cur+=c;
   }
-  cols.push(cur.trim()); return cols;
+  cols.push(cur.trim());return cols;
 }
-function parseCSV(text) {
-  const lines=text.split('\n').filter(l=>l.trim());
-  if(lines.length<2)return[];
+function parseCSV(text){
+  const lines=text.split('\n').filter(l=>l.trim());if(lines.length<2)return[];
   const headers=parseCSVLine(lines[0]);
   return lines.slice(1).map(line=>{
-    const vals=parseCSVLine(line), obj={};
-    headers.forEach((h,i)=>{ obj[h.trim()]=(vals[i]||'').replace(/""/g,'"'); });
+    const vals=parseCSVLine(line),obj={};
+    headers.forEach((h,i)=>{obj[h.trim()]=(vals[i]||'').replace(/""/g,'"');});
     return obj;
   }).filter(o=>Object.values(o).some(v=>v));
 }
 
-// ── ASSET NUMBER ─────────────────────────────────────────────────────────────
+// ── ASSET NO ──────────────────────────────────────────────────────────────────
 function hexDecode(s){
   if(s.length%2!==0||!/^[0-9A-Fa-f]+$/.test(s))return null;
   let o='';for(let i=0;i<s.length;i+=2)o+=String.fromCharCode(parseInt(s.substr(i,2),16));
-  return /^[\x20-\x7E]+$/.test(o)?o:null;
+  return/^[\x20-\x7E]+$/.test(o)?o:null;
 }
 function normalizeAssetNo(raw){
-  const si=raw.indexOf(' '); let no=si>0?raw.slice(si+1).trim():raw.trim();
+  const si=raw.indexOf(' ');let no=si>0?raw.slice(si+1).trim():raw.trim();
   const di=no.lastIndexOf('-');
-  if(di>0){no=`${parseInt(no.slice(0,di))}-${parseInt(no.slice(di+1))}`;}
-  else{no=String(parseInt(no)||no);}
+  if(di>0){no=`${parseInt(no.slice(0,di))}-${parseInt(no.slice(di+1))}`;}else{no=String(parseInt(no)||no);}
   return no;
 }
 function parseAssetNo(raw){let t=raw.trim();const d=hexDecode(t);if(d)t=d;return normalizeAssetNo(t);}
 function findAsset(n){return assets.find(a=>a.assetNo===n)||assets.find(a=>normalizeAssetNo(a.assetNo)===n);}
 
 // ── LOAD ──────────────────────────────────────────────────────────────────────
-function loadCSVFile(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=ev=>processAssets(ev.target.result,f.name);r.readAsText(f);e.target.value='';
-}
+function loadCSVFile(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>processAssets(ev.target.result,f.name);r.readAsText(f);e.target.value='';}
 async function loadFromURL(){
   const url=document.getElementById('csv-url').value.trim();if(!url)return;
   const st=document.getElementById('url-status');st.textContent='Fetching…';st.style.color='var(--text-3)';
-  try{
-    const resp=await fetch(url);if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
-    const text=await resp.text();localStorage.setItem(STORE_URL,url);
-    processAssets(text,url.split('/').pop());
-    st.textContent='Loaded.';st.style.color='var(--success)';
-  }catch(err){st.textContent='Failed: '+err.message;st.style.color='var(--danger)';}
+  try{const resp=await fetch(url);if(!resp.ok)throw new Error(`HTTP ${resp.status}`);const text=await resp.text();localStorage.setItem(STORE_URL,url);processAssets(text,url.split('/').pop());st.textContent='Loaded.';st.style.color='var(--success)';}
+  catch(err){st.textContent='Failed: '+err.message;st.style.color='var(--danger)';}
 }
 function processAssets(csvText,src){
   const rows=parseCSV(csvText);if(!rows.length){toast('No data found','bad');return;}
   const acol=['Asset Number','asset number','ASSET NUMBER','ECC Asset Number','Asset No','AssetNo'].find(k=>k in rows[0])||Object.keys(rows[0])[1];
   assets=rows.map(r=>({
-    assetNo    :(r[acol]||'').trim(),
+    assetNo:(r[acol]||'').trim(),
     description:r['Description']||r['description']||r['Acct Dtrmn Name']||'',
-    custodian  :r['User/Custodian ID']||r['Custodian']||'',
-    location   :r['Section/Room Desc']||r['Location']||r['Section/Room Description']||'',
-    serial     :r['Serial number']||r['Serial Number']||r['Serial']||'',
-    office     :r['Office']||r['Office ']||'',
-    department :r['Department']||r['Department ']||'',
-    deviceType :r['Device Type']||r['Asset Type']||'',
-    assetClass :r['Asset Class']||r['Asset class']||'',
+    custodian:r['User/Custodian ID']||r['Custodian']||'',
+    location:r['Section/Room Desc']||r['Location']||r['Section/Room Description']||'',
+    serial:r['Serial number']||r['Serial Number']||r['Serial']||'',
+    office:r['Office']||r['Office ']||'',
+    department:r['Department']||r['Department ']||'',
+    deviceType:r['Device Type']||r['Asset Type']||'',
+    assetClass:r['Asset Class']||r['Asset class']||'',
     _raw:r
   })).filter(a=>a.assetNo);
   localStorage.setItem(STORE_ASSETS,JSON.stringify(assets));
@@ -468,7 +452,6 @@ function processAssets(csvText,src){
   document.getElementById('progress-bar').style.display='';
   toast(`Loaded ${assets.length} assets`,'ok');switchTab('scan');
 }
-
 function populateFilterDropdowns(){
   const off=[...new Set(assets.map(a=>a.office).filter(Boolean))].sort();
   const cls=[...new Set(assets.map(a=>a.assetClass).filter(Boolean))].sort();
@@ -490,7 +473,7 @@ function loadSession(){
 }
 function resumeSession(){switchTab('scan');}
 function clearSession(){results={};disposeResults=[];localStorage.removeItem(STORE_RESULTS);localStorage.removeItem(STORE_DISPOSE);updateProgress();document.getElementById('session-card').style.display='none';toast('Session cleared','ok');}
-function saveResults(){try{localStorage.setItem(STORE_RESULTS,JSON.stringify(results));}catch(e){toast('Storage full — delete some photos','bad');}}
+function saveResults(){try{localStorage.setItem(STORE_RESULTS,JSON.stringify(results));}catch(e){toast('Storage full — export and clear photos','bad');}}
 
 // ── PROGRESS ──────────────────────────────────────────────────────────────────
 function updateProgress(){
@@ -498,7 +481,7 @@ function updateProgress(){
   const ok=Object.values(results).filter(r=>r.status==='ok').length;
   const flag=Object.values(results).filter(r=>r.status==='flag').length;
   const bad=Object.values(results).filter(r=>r.status==='bad').length;
-  const done=ok+flag+bad, pct=Math.round(done/total*100);
+  const done=ok+flag+bad,pct=Math.round(done/total*100);
   document.getElementById('prog-fill').style.width=pct+'%';
   document.getElementById('prog-pct').textContent=pct+'%';
   document.getElementById('prog-label').textContent=`${done} of ${total} assets checked`;
@@ -511,6 +494,14 @@ function updateProgress(){
 function updateHeader(src){document.getElementById('header-sub').textContent=`${assets.length} assets · ${src}`;}
 
 // ── PHOTO CAPTURE ─────────────────────────────────────────────────────────────
+// Camera SVG used in buttons
+const CAMERA_SVG=`<svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <rect x="2" y="7" width="20" height="14" rx="2"/>
+  <circle cx="12" cy="14" r="4"/>
+  <path d="M8 7V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>
+  <circle cx="18" cy="10.5" r="1" fill="currentColor" stroke="none"/>
+</svg>`;
+
 function openCamera(onCapture){
   const input=document.createElement('input');
   input.type='file';input.accept='image/*';input.capture='environment';
@@ -521,10 +512,10 @@ function openCamera(onCapture){
       const img=new Image();
       img.onload=()=>{
         const canvas=document.createElement('canvas');
-        const maxW=800, scale=Math.min(1,maxW/img.width);
+        const maxW=900,scale=Math.min(1,maxW/img.width);
         canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);
         canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-        onCapture(canvas.toDataURL('image/jpeg',0.72));
+        onCapture(canvas.toDataURL('image/jpeg',0.75));
       };
       img.src=ev.target.result;
     };
@@ -533,62 +524,90 @@ function openCamera(onCapture){
   document.body.appendChild(input);input.click();setTimeout(()=>input.remove(),60000);
 }
 
-function renderPhotoBox(areaId, dataUrl, onSave, onRemove){
-  const area=document.getElementById(areaId);if(!area)return;
-  area.innerHTML=`
-    <div class="photo-preview">
-      <img src="${dataUrl}" alt="Photo">
-      <div class="photo-preview-actions">
-        <button class="dl-btn" onclick="(${onSave})()">⬇ Save Photo</button>
-        <button class="rm-btn" onclick="(${onRemove})()">✕ Remove</button>
-      </div>
-    </div>`;
-}
-
-function downloadDataUrl(dataUrl, filename){
-  const a=document.createElement('a');a.href=dataUrl;a.download=filename;a.click();
-}
-
-// Verify tab photo
-function takeVerifyPhoto(assetNo){
+// ── VERIFY PHOTO ──────────────────────────────────────────────────────────────
+function takeVerifyPhoto(){
+  if(!currentAsset)return;
   openCamera(dataUrl=>{
-    if(!results[assetNo])results[assetNo]={status:'',note:'',scannedAt:'',raw:''};
-    results[assetNo].photo=dataUrl;saveResults();
-    const safe=assetNo.replace(/[^a-z0-9]/gi,'_');
-    renderPhotoBox(
-      'verify-photo-area',dataUrl,
-      `function(){downloadDataUrl('${dataUrl}','photo_${safe}.jpg')}`,
-      `function(){delete results['${escJ(assetNo)}'].photo;saveResults();document.getElementById('verify-photo-area').innerHTML='';toast('Photo removed','ok');}`
-    );
+    if(!results[currentAsset.assetNo])results[currentAsset.assetNo]={status:'',note:'',scannedAt:'',raw:''};
+    results[currentAsset.assetNo].photo=dataUrl;
+    saveResults();
+    renderVerifyPhotoArea();
     toast('Photo saved','ok');
   });
 }
+function renderVerifyPhotoArea(){
+  const area=document.getElementById('verify-photo-area');if(!area)return;
+  const photo=currentAsset&&results[currentAsset.assetNo]?.photo;
+  if(photo){
+    area.innerHTML=`<div class="photo-thumb-wrap">
+      <img src="${photo}" alt="Asset photo">
+      <div class="photo-thumb-actions">
+        <button class="btn-save-photo" onclick="downloadVerifyPhoto()">Save to device</button>
+        <button class="btn-remove-photo" onclick="removeVerifyPhoto()">Remove</button>
+      </div>
+    </div>`;
+  } else {
+    area.innerHTML=`<button class="snap-btn" onclick="takeVerifyPhoto()">${CAMERA_SVG} Take Asset Photo</button>`;
+  }
+}
+function downloadVerifyPhoto(){
+  if(!currentAsset)return;
+  const photo=results[currentAsset.assetNo]?.photo;
+  if(photo)downloadDataUrl(photo,`asset_${currentAsset.assetNo}.jpg`);
+}
+function removeVerifyPhoto(){
+  if(!currentAsset)return;
+  delete results[currentAsset.assetNo].photo;
+  saveResults();renderVerifyPhotoArea();toast('Photo removed','ok');
+}
 
-// Dispose asset photo
+// ── DISPOSE PHOTO ─────────────────────────────────────────────────────────────
 function takeDisposePhoto(){
   openCamera(dataUrl=>{
     pendingDisposePhoto=dataUrl;
-    renderPhotoBox(
-      'dispose-photo-area',dataUrl,
-      `function(){downloadDataUrl('${dataUrl}','dispose_photo.jpg')}`,
-      `function(){pendingDisposePhoto=null;document.getElementById('dispose-photo-area').innerHTML='';}`
-    );
+    renderDisposePhotoArea();
     toast('Asset photo saved','ok');
   });
 }
+function renderDisposePhotoArea(){
+  const area=document.getElementById('dispose-photo-area');if(!area)return;
+  if(pendingDisposePhoto){
+    area.innerHTML=`<div class="photo-thumb-wrap" style="margin-top:8px;">
+      <img src="${pendingDisposePhoto}" alt="Asset photo">
+      <div class="photo-thumb-actions">
+        <button class="btn-save-photo" onclick="downloadDataUrl(pendingDisposePhoto,'dispose_asset.jpg')">Save</button>
+        <button class="btn-remove-photo" onclick="pendingDisposePhoto=null;renderDisposePhotoArea()">Remove</button>
+      </div>
+    </div>`;
+  } else {
+    area.innerHTML='';
+  }
+}
 
-// Sanitization proof photo
+// ── SANITIZE PHOTO ────────────────────────────────────────────────────────────
 function takeSanitizePhoto(){
   openCamera(dataUrl=>{
     pendingSanitizePhoto=dataUrl;
-    renderPhotoBox(
-      'sanitize-photo-area',dataUrl,
-      `function(){downloadDataUrl('${dataUrl}','sanitize_proof.jpg')}`,
-      `function(){pendingSanitizePhoto=null;document.getElementById('sanitize-photo-area').innerHTML='';}`
-    );
+    renderSanitizePhotoArea();
     toast('Proof photo saved','ok');
   });
 }
+function renderSanitizePhotoArea(){
+  const area=document.getElementById('sanitize-photo-area');if(!area)return;
+  if(pendingSanitizePhoto){
+    area.innerHTML=`<div class="photo-thumb-wrap" style="margin-top:8px;">
+      <img src="${pendingSanitizePhoto}" alt="Sanitization proof">
+      <div class="photo-thumb-actions">
+        <button class="btn-save-photo" onclick="downloadDataUrl(pendingSanitizePhoto,'sanitize_proof.jpg')">Save</button>
+        <button class="btn-remove-photo" onclick="pendingSanitizePhoto=null;renderSanitizePhotoArea()">Remove</button>
+      </div>
+    </div>`;
+  } else {
+    area.innerHTML='';
+  }
+}
+
+function downloadDataUrl(dataUrl,filename){const a=document.createElement('a');a.href=dataUrl;a.download=filename;a.click();}
 
 // ── VERIFY CAMERA ─────────────────────────────────────────────────────────────
 async function startCamera(){
@@ -598,7 +617,7 @@ async function startCamera(){
     camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
     const v=document.getElementById('scan-video');v.srcObject=camStream;await v.play();
     scanActive=true;scanLoop();
-  }catch(err){document.getElementById('scan-status').innerHTML=`<span style="color:var(--danger);">Camera denied.</span>`;}
+  }catch(e){document.getElementById('scan-status').innerHTML=`<span style="color:var(--danger);">Camera denied.</span>`;}
 }
 function stopCamera(){
   scanActive=false;if(scanAF){cancelAnimationFrame(scanAF);scanAF=null;}
@@ -614,14 +633,25 @@ function scanLoop(){
 function handleScan(rawQR,assetNo){
   const asset=findAsset(assetNo);const st=document.getElementById('scan-status');
   if(navigator.vibrate)navigator.vibrate(60);
-  if(asset){st.className='scan-status ok';st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Found: <strong>${assetNo}</strong></span>`;showResult(asset,rawQR);}
-  else{st.className='scan-status warn';st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Not in list: <strong>${assetNo}</strong></span>`;showNotFound(assetNo,rawQR);}
+  if(asset){
+    st.className='scan-status ok';
+    st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Found: <strong>${assetNo}</strong></span>`;
+    showResult(asset,rawQR);
+  } else {
+    st.className='scan-status warn';
+    st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Not in list: <strong>${assetNo}</strong></span>`;
+    showNotFound(assetNo,rawQR);
+  }
 }
 
 function showResult(asset,rawQR){
+  currentAsset=asset;
   const ex=results[asset.assetNo]||{};const status=ex.status||'';
-  const rows=[['Description',asset.description],['Custodian',asset.custodian],['Location',asset.location],['Serial No.',asset.serial],['Office',asset.office],['Department',asset.department],['Device Type',asset.deviceType],['Asset Class',asset.assetClass]].filter(([,v])=>v);
-  const photoPreview=ex.photo?`<div class="photo-preview"><img src="${ex.photo}" alt="Photo"><div class="photo-preview-actions"><button class="dl-btn" onclick="downloadDataUrl(results['${escJ(asset.assetNo)}'].photo,'photo_${asset.assetNo.replace(/[^a-z0-9]/gi,'_')}.jpg')">⬇ Save Photo</button><button class="rm-btn" onclick="delete results['${escJ(asset.assetNo)}'].photo;saveResults();document.getElementById('verify-photo-area').innerHTML='<button class=\\'photo-btn\\' onclick=\\'takeVerifyPhoto(\\'${escJ(asset.assetNo)}\\')\\'><svg width=\\'14\\' height=\\'14\\' fill=\\'none\\' viewBox=\\'0 0 24 24\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><path d=\\'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2l2-2h8l2 2h4a2 2 0 0 1 2 2z\\'/><circle cx=\\'12\\' cy=\\'13\\' r=\\'4\\'/></svg> Add Photo</button>'">✕ Remove</button></div></div>`:'';
+  const rows=[
+    ['Description',asset.description],['Custodian',asset.custodian],['Location',asset.location],
+    ['Serial No.',asset.serial],['Office',asset.office],['Department',asset.department],
+    ['Device Type',asset.deviceType],['Asset Class',asset.assetClass]
+  ].filter(([,v])=>v);
 
   document.getElementById('result-area').innerHTML=`
     <div class="result-card ${status||'ok'}">
@@ -631,21 +661,26 @@ function showResult(asset,rawQR){
       </div>
       <div class="result-body">${rows.map(([k,v])=>`<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${v}</span></div>`).join('')}</div>
       <div class="action-row">
-        <button class="action-btn ok   ${status==='ok'  ?'active':''}" onclick="markAsset('${escJ(asset.assetNo)}','ok',  '${escJ(rawQR)}')">✓ Verified</button>
-        <button class="action-btn flag ${status==='flag'?'active':''}" onclick="markAsset('${escJ(asset.assetNo)}','flag','${escJ(rawQR)}')">⚠ Flagged</button>
-        <button class="action-btn bad  ${status==='bad' ?'active':''}" onclick="markAsset('${escJ(asset.assetNo)}','bad', '${escJ(rawQR)}')">✗ Missing</button>
+        <button class="action-btn ok   ${status==='ok'  ?'active':''}" onclick="markAsset('ok')">✓ Verified</button>
+        <button class="action-btn flag ${status==='flag'?'active':''}" onclick="markAsset('flag')">⚠ Flagged</button>
+        <button class="action-btn bad  ${status==='bad' ?'active':''}" onclick="markAsset('bad')">✗ Missing</button>
       </div>
-      <div class="note-row"><input type="text" placeholder="Add note (optional)" value="${escH(ex.note||'')}" oninput="updateNote('${escJ(asset.assetNo)}',this.value)"></div>
-      <div class="photo-row">
-        <div class="photo-row-label">Asset Photo</div>
-        <div id="verify-photo-area">${ex.photo?photoPreview:`<button class="photo-btn" onclick="takeVerifyPhoto('${escJ(asset.assetNo)}')"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2l2-2h8l2 2h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Add Photo</button>`}</div>
+      <div class="note-row"><input type="text" id="verify-note" placeholder="Add note (optional)" value="${escH(ex.note||'')}" oninput="updateNote(this.value)"></div>
+      <div class="photo-section">
+        <div class="photo-section-title">Asset Photo</div>
+        <div id="verify-photo-area"></div>
       </div>
-      <div class="rescan-row"><button class="rescan-btn" onclick="retakeVerify()">↩ Rescan</button></div>
+      <div class="rescan-row"><button class="rescan-btn" onclick="retakeVerify()">↩ Rescan another</button></div>
     </div>`;
-  if(!ex.status)markAsset(asset.assetNo,'ok',rawQR,true);
+
+  // Store rawQR on the asset reference for markAsset()
+  currentAsset._rawQR = rawQR;
+  renderVerifyPhotoArea();
+  if(!ex.status) markAsset('ok', true);
 }
 
 function showNotFound(assetNo,rawQR){
+  currentAsset={assetNo,_rawQR:rawQR};
   document.getElementById('result-area').innerHTML=`
     <div class="result-card warn">
       <div class="result-header">
@@ -657,30 +692,32 @@ function showNotFound(assetNo,rawQR){
         <div class="result-row"><span class="result-key">Parsed as</span><span class="result-val">${assetNo}</span></div>
       </div>
       <div class="action-row">
-        <button class="action-btn flag" onclick="markUnknown('${escJ(assetNo)}','${escJ(rawQR)}','flag')">⚠ Flag it</button>
-        <button class="action-btn bad"  onclick="markUnknown('${escJ(assetNo)}','${escJ(rawQR)}','bad')">✗ Mark missing</button>
+        <button class="action-btn flag" onclick="markAsset('flag')">⚠ Flag it</button>
+        <button class="action-btn bad"  onclick="markAsset('bad')">✗ Mark missing</button>
       </div>
-      <div class="note-row"><input type="text" placeholder="Add note" oninput="updateNote('${escJ(assetNo)}',this.value)"></div>
-      <div class="rescan-row"><button class="rescan-btn" onclick="retakeVerify()">↩ Rescan</button></div>
+      <div class="note-row"><input type="text" id="verify-note" placeholder="Add note" oninput="updateNote(this.value)"></div>
+      <div class="rescan-row"><button class="rescan-btn" onclick="retakeVerify()">↩ Rescan another</button></div>
     </div>`;
 }
 
 function retakeVerify(){
+  currentAsset=null;
   document.getElementById('result-area').innerHTML='';
   const st=document.getElementById('scan-status');st.className='scan-status idle';
   st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Ready — waiting for QR or barcode…</span>`;
   lastScanned='';lastScannedT=0;
 }
 
-function markAsset(assetNo,status,rawQR,silent){
+function markAsset(status,silent){
+  if(!currentAsset)return;
+  const assetNo=currentAsset.assetNo;const rawQR=currentAsset._rawQR||assetNo;
   if(!results[assetNo])results[assetNo]={};
   results[assetNo]={...results[assetNo],status,scannedAt:new Date().toISOString(),raw:rawQR};
   saveResults();updateProgress();
   if(!silent)toast({ok:'✓ Verified',flag:'⚠ Flagged',bad:'✗ Marked missing'}[status],status==='ok'?'ok':'bad');
   document.querySelectorAll('#result-area .action-btn').forEach(b=>{b.classList.remove('active');if(b.classList.contains(status))b.classList.add('active');});
 }
-function markUnknown(assetNo,rawQR,status){markAsset(assetNo,status,rawQR);}
-function updateNote(assetNo,note){if(!results[assetNo])results[assetNo]={status:'',note:'',scannedAt:'',raw:''};results[assetNo].note=note;saveResults();}
+function updateNote(note){if(!currentAsset)return;if(!results[currentAsset.assetNo])results[currentAsset.assetNo]={status:'',note:'',scannedAt:'',raw:''};results[currentAsset.assetNo].note=note;saveResults();}
 
 // ── DISPOSE CAMERA ────────────────────────────────────────────────────────────
 async function startDisposeCamera(){
@@ -690,7 +727,7 @@ async function startDisposeCamera(){
     dispCamStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
     const v=document.getElementById('dispose-video');v.srcObject=dispCamStream;await v.play();
     dispScanActive=true;disposeScanLoop();
-  }catch(err){document.getElementById('dispose-status').innerHTML=`<span style="color:var(--danger);">Camera denied.</span>`;}
+  }catch(e){document.getElementById('dispose-status').innerHTML=`<span style="color:var(--danger);">Camera denied.</span>`;}
 }
 function stopDisposeCamera(){
   dispScanActive=false;if(dispScanAF){cancelAnimationFrame(dispScanAF);dispScanAF=null;}
@@ -706,43 +743,46 @@ function disposeScanLoop(){
 function handleDisposeScan(rawQR,assetNo){
   const asset=findAsset(assetNo);const st=document.getElementById('dispose-status');
   if(navigator.vibrate)navigator.vibrate(60);
-  if(asset){st.className='scan-status ok';st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Found: <strong>${assetNo}</strong></span>`;showDisposeResult(asset,rawQR);}
-  else{st.className='scan-status warn';st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Not in list: <strong>${assetNo}</strong></span>`;showDisposeNotFound(assetNo,rawQR);}
+  currentDisposeAssetNo=assetNo;pendingDisposePhoto=null;pendingSanitizePhoto=null;
+  if(asset){
+    st.className='scan-status ok';
+    st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>Found: <strong>${assetNo}</strong></span>`;
+    showDisposeResult(asset,rawQR);
+  } else {
+    st.className='scan-status warn';
+    st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Not in list: <strong>${assetNo}</strong></span>`;
+    showDisposeNotFound(assetNo,rawQR);
+  }
 }
 
 function showDisposeResult(asset,rawQR){
   const done=disposeResults.some(d=>d.assetNo===asset.assetNo);
-  const rows=[['Description',asset.description],['Office',asset.office],['Department',asset.department],['Asset Class',asset.assetClass],['Device Type',asset.deviceType],['Location',asset.location],['Serial No.',asset.serial]].filter(([,v])=>v);
-  const existingRecord=disposeResults.find(d=>d.assetNo===asset.assetNo);
+  const rows=[
+    ['Description',asset.description],['Office',asset.office],['Department',asset.department],
+    ['Asset Class',asset.assetClass],['Device Type',asset.deviceType],['Location',asset.location],['Serial No.',asset.serial]
+  ].filter(([,v])=>v);
 
-  const confirmSection=done?`<div class="already-disposed">Already recorded for disposal</div>`:`
-    <div class="action-row" style="flex-direction:column;gap:8px;">
-      <input type="text" id="dispose-note" placeholder="Reason / note (optional)" style="font-size:12px;padding:6px 10px;border-radius:6px;">
-      <button class="dispose-confirm-btn" onclick="confirmDispose('${escJ(asset.assetNo)}','${escJ(rawQR)}')">Confirm Disposal</button>
-    </div>
-    <div class="sanitize-section">
-      <div class="sanitize-title">Storage Sanitization</div>
-      <div class="sanitize-opts">
-        <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="na" checked><span>N/A</span></label>
-        <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="formatted"><span>Formatted / Wiped</span></label>
-        <label class="sanitize-opt destroy"><input type="radio" name="disp-sanitize" value="destroyed"><span>Physically Destroyed</span></label>
+  const confirmBlock=done
+    ?`<div class="already-disposed">Already recorded for disposal</div>`
+    :`<div class="action-row" style="flex-direction:column;gap:8px;">
+        <input type="text" id="dispose-note" placeholder="Reason / note (optional)" style="font-size:12px;padding:6px 10px;border-radius:6px;">
+        <button class="dispose-confirm-btn" onclick="confirmDispose()">Confirm Disposal</button>
       </div>
-      <div class="sanitize-proof">
-        <button class="photo-btn" onclick="takeSanitizePhoto()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2l2-2h8l2 2h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Proof Photo</button>
+      <div class="sanitize-section">
+        <div class="sanitize-title">Storage Sanitization</div>
+        <div class="sanitize-opts">
+          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="na" checked><span>N/A</span></label>
+          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="formatted"><span>Formatted / Wiped</span></label>
+          <label class="sanitize-opt destroy"><input type="radio" name="disp-sanitize" value="destroyed"><span>Physically Destroyed</span></label>
+        </div>
+        <button class="snap-btn" onclick="takeSanitizePhoto()" style="margin-bottom:6px;">${CAMERA_SVG} Take Proof Photo (sanitization)</button>
         <div id="sanitize-photo-area"></div>
       </div>
-    </div>
-    <div class="photo-row">
-      <div class="photo-row-label">Asset Photo</div>
-      <button class="photo-btn" onclick="takeDisposePhoto()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2l2-2h8l2 2h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Add Photo</button>
-      <div id="dispose-photo-area"></div>
-    </div>`;
-
-  // Show existing sanitize info if already done
-  const doneInfo=done&&existingRecord?`
-    <div class="dispose-meta">Sanitization: <span class="s-badge ${existingRecord.sanitizationMethod==='formatted'?'fmt':existingRecord.sanitizationMethod==='destroyed'?'dest':'na'}">${{na:'N/A',formatted:'Formatted',destroyed:'Destroyed'}[existingRecord.sanitizationMethod||'na']}</span></div>
-    ${existingRecord.photo?`<div class="dispose-meta"><a href="${existingRecord.photo}" download="dispose_photo.jpg" style="color:var(--accent);font-size:11px;">⬇ Asset Photo</a></div>`:''}
-    ${existingRecord.sanitizePhoto?`<div class="dispose-meta"><a href="${existingRecord.sanitizePhoto}" download="sanitize_proof.jpg" style="color:var(--accent);font-size:11px;">⬇ Sanitize Proof</a></div>`:''}`:'';
+      <div class="photo-section">
+        <div class="photo-section-title">Asset Photo</div>
+        <button class="snap-btn" onclick="takeDisposePhoto()">${CAMERA_SVG} Take Asset Photo</button>
+        <div id="dispose-photo-area"></div>
+      </div>`;
 
   document.getElementById('dispose-result-area').innerHTML=`
     <div class="result-card ${done?'flag':'warn'}">
@@ -750,9 +790,9 @@ function showDisposeResult(asset,rawQR){
         <div class="result-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
         <div><div class="result-asset">${asset.assetNo}</div><div class="result-desc">${asset.description||'—'}</div></div>
       </div>
-      <div class="result-body">${rows.map(([k,v])=>`<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${v}</span></div>`).join('')}${doneInfo}</div>
-      ${confirmSection}
-      <div class="rescan-row"><button class="rescan-btn" onclick="retakeDispose()">↩ Rescan</button></div>
+      <div class="result-body">${rows.map(([k,v])=>`<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${v}</span></div>`).join('')}</div>
+      ${confirmBlock}
+      <div class="rescan-row"><button class="rescan-btn" onclick="retakeDispose()">↩ Rescan another</button></div>
     </div>`;
 }
 
@@ -765,8 +805,8 @@ function showDisposeNotFound(assetNo,rawQR){
       </div>
       <div class="result-body"><div class="result-row"><span class="result-key">Raw scan</span><span class="result-val">${rawQR}</span></div></div>
       <div class="action-row" style="flex-direction:column;gap:8px;">
-        <input type="text" id="dispose-note" placeholder="Reason / note (optional)" style="font-size:12px;padding:6px 10px;border-radius:6px;">
-        <button class="dispose-confirm-btn" onclick="confirmDispose('${escJ(assetNo)}','${escJ(rawQR)}')">Record Disposal</button>
+        <input type="text" id="dispose-note" placeholder="Reason / note" style="font-size:12px;padding:6px 10px;border-radius:6px;">
+        <button class="dispose-confirm-btn" onclick="confirmDispose()">Record Disposal</button>
       </div>
       <div class="sanitize-section">
         <div class="sanitize-title">Storage Sanitization</div>
@@ -775,28 +815,28 @@ function showDisposeNotFound(assetNo,rawQR){
           <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="formatted"><span>Formatted / Wiped</span></label>
           <label class="sanitize-opt destroy"><input type="radio" name="disp-sanitize" value="destroyed"><span>Physically Destroyed</span></label>
         </div>
-        <div class="sanitize-proof">
-          <button class="photo-btn" onclick="takeSanitizePhoto()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2l2-2h8l2 2h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Proof Photo</button>
-          <div id="sanitize-photo-area"></div>
-        </div>
+        <button class="snap-btn" onclick="takeSanitizePhoto()" style="margin-bottom:6px;">${CAMERA_SVG} Take Proof Photo (sanitization)</button>
+        <div id="sanitize-photo-area"></div>
       </div>
-      <div class="photo-row">
-        <div class="photo-row-label">Asset Photo</div>
-        <button class="photo-btn" onclick="takeDisposePhoto()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2l2-2h8l2 2h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Add Photo</button>
+      <div class="photo-section">
+        <div class="photo-section-title">Asset Photo</div>
+        <button class="snap-btn" onclick="takeDisposePhoto()">${CAMERA_SVG} Take Asset Photo</button>
         <div id="dispose-photo-area"></div>
       </div>
-      <div class="rescan-row"><button class="rescan-btn" onclick="retakeDispose()">↩ Rescan</button></div>
+      <div class="rescan-row"><button class="rescan-btn" onclick="retakeDispose()">↩ Rescan another</button></div>
     </div>`;
 }
 
 function retakeDispose(){
+  currentDisposeAssetNo=null;pendingDisposePhoto=null;pendingSanitizePhoto=null;
   document.getElementById('dispose-result-area').innerHTML='';
   const st=document.getElementById('dispose-status');st.className='scan-status idle';
   st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg><span>Disposal mode — scan item to record…</span>`;
-  lastDispScanned='';lastDispScannedT=0;pendingDisposePhoto=null;pendingSanitizePhoto=null;
+  lastDispScanned='';lastDispScannedT=0;
 }
 
-function confirmDispose(assetNo,rawQR){
+function confirmDispose(){
+  const assetNo=currentDisposeAssetNo;if(!assetNo)return;
   const asset=findAsset(assetNo);
   const note=document.getElementById('dispose-note')?.value||'';
   const sanitizeMethod=document.querySelector('input[name="disp-sanitize"]:checked')?.value||'na';
@@ -807,12 +847,12 @@ function confirmDispose(assetNo,rawQR){
     sanitizationMethod:sanitizeMethod,
     photo:pendingDisposePhoto||null,
     sanitizePhoto:pendingSanitizePhoto||null,
-    raw:rawQR
+    raw:lastDispScanned
   });
   pendingDisposePhoto=null;pendingSanitizePhoto=null;
-  try{localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));}catch(e){toast('Storage full — export and clear','bad');}
+  try{localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));}catch(e){toast('Storage full','bad');}
   toast(`Disposal recorded: ${assetNo}`,'ok');
-  if(asset)showDisposeResult(asset,rawQR);
+  if(asset)showDisposeResult(asset,lastDispScanned);
   renderDisposeList();
 }
 
@@ -822,8 +862,7 @@ function renderDisposeList(){
   if(!disposeResults.length){el.innerHTML='<div class="empty"><p>No disposal records yet</p></div>';return;}
   const sLabel={na:'N/A',formatted:'Formatted',destroyed:'Destroyed'};
   const sCls={na:'na',formatted:'fmt',destroyed:'dest'};
-  el.innerHTML=[...disposeResults].reverse().map((d,ri)=>{
-    const i=disposeResults.length-1-ri;
+  el.innerHTML=[...disposeResults].reverse().map(d=>{
     const time=new Date(d.disposedAt).toLocaleString('en-SG',{dateStyle:'short',timeStyle:'short'});
     const meta=[d.office,d.department,d.assetClass,d.deviceType].filter(Boolean).join(' · ');
     const sm=d.sanitizationMethod||'na';
@@ -833,9 +872,9 @@ function renderDisposeList(){
       ${meta?`<div class="dispose-meta">${meta}</div>`:''}
       <div class="dispose-meta">Storage: <span class="s-badge ${sCls[sm]}">${sLabel[sm]}</span></div>
       ${d.note?`<div class="dispose-meta" style="color:var(--text-3);">Note: ${d.note}</div>`:''}
-      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
-        ${d.photo?`<a href="${d.photo}" download="asset_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">⬇ Asset Photo</a>`:''}
-        ${d.sanitizePhoto?`<a href="${d.sanitizePhoto}" download="sanitize_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">⬇ Sanitize Proof</a>`:''}
+      <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+        ${d.photo?`<a href="${d.photo}" download="asset_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Asset Photo</a>`:''}
+        ${d.sanitizePhoto?`<a href="${d.sanitizePhoto}" download="sanitize_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Sanitize Proof</a>`:''}
       </div>
       <div class="dispose-time">${time}</div>
     </div>`;
@@ -847,9 +886,8 @@ function exportDisposal(){
   const cols=['Asset Number','Description','Office','Department','Device Type','Asset Class','Disposed At','Note','Sanitization Method','Asset Photo Taken','Sanitize Proof Taken','QR Raw'];
   const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
   const rows=[cols.join(','),...disposeResults.map(d=>[
-    d.assetNo,d.description,d.office,d.department,d.deviceType,d.assetClass,
-    d.disposedAt,d.note,
-    {na:'N/A',formatted:'Formatted / Wiped',destroyed:'Physically Destroyed'}[d.sanitizationMethod||'na'],
+    d.assetNo,d.description,d.office,d.department,d.deviceType,d.assetClass,d.disposedAt,d.note,
+    {na:'N/A',formatted:'Formatted/Wiped',destroyed:'Physically Destroyed'}[d.sanitizationMethod||'na'],
     d.photo?'Yes':'No',d.sanitizePhoto?'Yes':'No',d.raw
   ].map(esc).join(','))];
   const blob=new Blob([rows.join('\n')],{type:'text/csv'});
@@ -859,12 +897,12 @@ function exportDisposal(){
 
 // ── LIST ──────────────────────────────────────────────────────────────────────
 function renderList(){
-  const search=( document.getElementById('list-search')?.value||'').toLowerCase();
+  const search=(document.getElementById('list-search')?.value||'').toLowerCase();
   const statusF=document.getElementById('list-status-filter')?.value||'';
   const officeF=document.getElementById('list-office-filter')?.value||'';
-  const classF =document.getElementById('list-class-filter')?.value||'';
+  const classF=document.getElementById('list-class-filter')?.value||'';
   const el=document.getElementById('asset-list');
-  let list=assets.filter(a=>{
+  const list=assets.filter(a=>{
     const r=results[a.assetNo];const st=r?.status||'none';
     if(statusF&&st!==statusF)return false;
     if(officeF&&a.office!==officeF)return false;
@@ -874,7 +912,7 @@ function renderList(){
   });
   if(!list.length){el.innerHTML='<div class="empty"><p>No assets match</p></div>';return;}
   const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',none:'Pending'};
-  const sCls  ={ok:'badge-ok',flag:'badge-flag',bad:'badge-bad',none:'badge-none'};
+  const sCls={ok:'badge-ok',flag:'badge-flag',bad:'badge-bad',none:'badge-none'};
   el.innerHTML=list.slice(0,200).map(a=>{
     const r=results[a.assetNo];const st=r?.status||'none';
     const meta=[a.office,a.assetClass,a.location].filter(Boolean).join(' · ');
@@ -884,7 +922,7 @@ function renderList(){
       <span class="asset-badge ${sCls[st]}">${sLabel[st]}</span>
     </div>`;
   }).join('');
-  if(list.length>200)el.innerHTML+=`<div class="loading">Showing 200 of ${list.length} — use search to narrow down</div>`;
+  if(list.length>200)el.innerHTML+=`<div class="loading">Showing 200 of ${list.length} — refine search</div>`;
 }
 function jumpToAsset(assetNo){const asset=findAsset(assetNo);if(asset){showResult(asset,assetNo);switchTab('scan');}}
 
@@ -897,7 +935,7 @@ function exportReport(){
   assets.forEach(a=>{const r=results[a.assetNo]||{};rows.push([a.assetNo,a.description,a.custodian,a.location,a.serial,a.office,a.department,a.deviceType,a.assetClass,r.status||'pending',r.note||'',r.photo?'Yes':'No',r.scannedAt||'',r.raw||''].map(esc).join(','));});
   const blob=new Blob([rows.join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`asset_verify_${new Date().toISOString().slice(0,10)}.csv`;a.click();
-  toast(`Exported ${assets.length} records — saved to Downloads`,'ok');
+  toast(`Exported ${assets.length} records`,'ok');
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
