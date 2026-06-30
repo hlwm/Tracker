@@ -130,6 +130,13 @@ input:focus,select:focus{border-color:var(--accent);}
 
 /* RESCAN */
 .rescan-row{padding:8px 14px 12px;background:var(--bg);border-top:1px solid var(--border);text-align:center;}
+.edit-section{border-top:1px solid var(--border);background:var(--bg);padding:10px 14px;}
+.edit-toggle-btn{width:100%;padding:8px;border-radius:8px;font-size:12px;font-weight:600;background:var(--surface);border:1px solid var(--border);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.edit-toggle-btn:active{background:var(--bg);}
+.edit-fields{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+.edit-field label{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px;}
+.edit-field input{font-size:13px;padding:8px 10px;}
+.edited-tag{font-size:9px;font-weight:700;background:#eff6ff;color:var(--accent);border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
 .rescan-btn{background:none;border:1.5px solid var(--border);color:var(--text-2);border-radius:8px;padding:7px 18px;font-size:12px;font-weight:600;cursor:pointer;}
 .rescan-btn:hover{border-color:var(--accent);color:var(--accent);}
 
@@ -146,6 +153,8 @@ input:focus,select:focus{border-color:var(--accent);}
 .asset-dot.flag{background:var(--warning);}
 .asset-dot.bad{background:var(--danger);}
 .asset-dot.none{background:var(--border);}
+.asset-dot.disposed{background:#7c3aed;}
+.badge-disposed{background:#f5f3ff;color:#7c3aed;}
 .asset-info{flex:1;min-width:0;}
 .asset-no{font-size:13px;font-weight:600;}
 .asset-name{font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
@@ -178,6 +187,21 @@ input:focus,select:focus{border-color:var(--accent);}
 .empty p{font-size:13px;margin-top:8px;}
 .loading{text-align:center;padding:2rem;color:var(--text-3);font-size:13px;}
 .chip{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:20px;font-size:11px;padding:2px 8px;color:var(--text-2);}
+.btn-reset{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;background:none;border:1.5px solid var(--danger);color:var(--danger);cursor:pointer;transition:background .15s;}
+.btn-reset:hover,.btn-reset:active{background:#fef2f2;}
+/* Detail sheet */
+.sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:flex-end;}
+.sheet-backdrop.open{display:flex;}
+.sheet{background:var(--surface);border-radius:18px 18px 0 0;width:100%;max-width:480px;margin:0 auto;padding:20px 16px 36px;max-height:88vh;overflow-y:auto;}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
+.sheet-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.sheet-asset-no{font-size:16px;font-weight:700;}
+.sheet-close{font-size:20px;color:var(--text-3);background:none;border:none;cursor:pointer;line-height:1;padding:0 4px;}
+.sheet-row{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;}
+.sheet-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;}
+.sheet-value{font-size:13px;color:var(--text);}
+.sheet-photo{width:100%;border-radius:10px;margin-top:10px;object-fit:cover;max-height:220px;}
+.sheet-actions{display:flex;gap:8px;margin-top:14px;}
 
 </style>
 </head>
@@ -209,28 +233,28 @@ input:focus,select:focus{border-color:var(--accent);}
 
 <!-- SETUP -->
 <div id="page-setup" class="page active">
+  <div class="setup-card" id="session-card" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+      <div>
+        <div class="setup-title" id="session-title">Previous Session Found</div>
+        <div class="setup-sub" id="session-info" style="margin-top:2px;"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-primary" onclick="resumeSession()" style="flex:1;">Resume</button>
+      <button class="btn-reset" onclick="resetAll()">↺ Reset All</button>
+    </div>
+  </div>
   <div class="setup-card">
     <div class="setup-title">Load Fixed Asset List</div>
-    <div class="setup-sub">Upload the FA CSV from NUS or fetch from a URL.</div>
+    <div class="setup-sub">Upload the FA CSV exported from NUS Finance or paste a direct URL.</div>
     <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="loadCSVFile(event)">
     <button class="btn btn-primary" onclick="document.getElementById('csv-file').click()">
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       Choose CSV File
     </button>
-    <div class="or-divider">or fetch from URL</div>
-    <div class="url-row">
-      <input type="url" id="csv-url" placeholder="https://raw.githubusercontent.com/…/assets.csv">
-      <button onclick="loadFromURL()">Fetch</button>
-    </div>
-    <div id="url-status" style="font-size:11px;color:var(--text-3);margin-top:6px;min-height:16px;"></div>
-  </div>
-  <div class="setup-card" id="session-card" style="display:none;">
-    <div class="setup-title">Resume Previous Session</div>
-    <div class="setup-sub" id="session-info"></div>
-    <div style="display:flex;gap:8px;margin-top:4px;">
-      <button class="btn btn-primary" onclick="resumeSession()" style="flex:1;">Resume</button>
-      <button class="btn btn-outline" onclick="clearSession()" style="flex:1;">Start Fresh</button>
-    </div>
+    <div id="url-status" style="display:none;"></div>
+    <input type="url" id="csv-url" style="display:none;">
   </div>
   <div class="setup-card" style="background:none;border:none;box-shadow:none;padding-top:0;">
     <div style="font-size:11px;color:var(--text-3);line-height:1.7;">
@@ -291,12 +315,13 @@ input:focus,select:focus{border-color:var(--accent);}
         <option value="ok">Verified</option>
         <option value="flag">Flagged</option>
         <option value="bad">Missing</option>
+        <option value="disposed">Disposed</option>
         <option value="none">Pending</option>
       </select>
     </div>
     <div class="list-filter-row">
-      <select id="list-office-filter" onchange="renderList()" style="flex:1;"><option value="">All Offices</option></select>
-      <select id="list-class-filter"  onchange="renderList()" style="flex:1;"><option value="">All Asset Classes</option></select>
+      <select id="list-office-filter" onchange="onOfficeFilterChange()" style="flex:1;"><option value="">All Offices</option></select>
+      <select id="list-dept-filter"   onchange="renderList()" style="flex:1;"><option value="">All Departments</option></select>
     </div>
   </div>
   <div class="asset-list" id="asset-list"></div>
@@ -382,8 +407,9 @@ async function processFrame(videoId,canvasId){
   canvas.width=video.videoWidth;canvas.height=video.videoHeight;
   canvas.getContext('2d').drawImage(video,0,0);
   if(zxingReader){
-    try{return zxingReader.decodeFromCanvas(canvas).getText();}catch(e){return null;}
+    try{const r=zxingReader.decodeFromCanvas(canvas);if(r)return r.getText();}catch(e){}
   }
+  // jsQR fallback — always runs if ZXing found nothing (guaranteed QR detection)
   const img=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
   const qr=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
   return qr?qr.data:null;
@@ -427,11 +453,41 @@ function findAsset(n){return assets.find(a=>a.assetNo===n)||assets.find(a=>norma
 
 // ── LOAD ──────────────────────────────────────────────────────────────────────
 function loadCSVFile(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>processAssets(ev.target.result,f.name);r.readAsText(f);e.target.value='';}
+function resolveSharePointUrl(url){
+  // Convert SharePoint view URLs  (:x:/r/sites/...) to direct file URLs (/sites/...)
+  try{
+    const u=new URL(url);
+    if(!u.hostname.includes('sharepoint.com'))return url;
+    const m=u.pathname.match(/^\/:[\w]+:\/r\/(.+)/);
+    if(m){const d=new URL(url);d.pathname='/'+m[1];d.search='';return d.href;}
+  }catch(e){}
+  return url;
+}
 async function loadFromURL(){
-  const url=document.getElementById('csv-url').value.trim();if(!url)return;
+  const raw=document.getElementById('csv-url').value.trim();if(!raw)return;
   const st=document.getElementById('url-status');st.textContent='Fetching…';st.style.color='var(--text-3)';
-  try{const resp=await fetch(url);if(!resp.ok)throw new Error(`HTTP ${resp.status}`);const text=await resp.text();localStorage.setItem(STORE_URL,url);processAssets(text,url.split('/').pop());st.textContent='Loaded.';st.style.color='var(--success)';}
-  catch(err){st.textContent='Failed: '+err.message;st.style.color='var(--danger)';}
+  const isSP=raw.includes('sharepoint.com');
+  const isPA=raw.includes('powerplatform.com')||raw.includes('logic.azure.com');
+  const url=isSP?resolveSharePointUrl(raw):raw;
+  try{
+    const opts=(isSP||isPA)?{credentials:'include',headers:{Accept:'text/plain,text/csv,*/*'}}:{};
+    const resp=await fetch(url,opts);
+    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+    const text=await resp.text();
+    if(text.trimStart().startsWith('<'))throw new Error('login-redirect');
+    localStorage.setItem(STORE_URL,raw);
+    processAssets(text,url.split('/').pop().split('?')[0]);
+    st.textContent='Loaded.';st.style.color='var(--success)';
+  }catch(err){
+    if(err.message==='login-redirect'||err.message.includes('401')){
+      st.innerHTML='Session expired — <a href="https://make.powerautomate.com" target="_blank" style="color:var(--accent)">open Power Automate</a> in this browser to sign in, then tap Fetch again.';
+    }else if(err.message.includes('Failed to fetch')||err.message.includes('NetworkError')){
+      st.innerHTML='CORS blocked — <a href="https://make.powerautomate.com" target="_blank" style="color:var(--accent)">open Power Automate</a> in this browser, sign in, then tap Fetch again.';
+    }else{
+      st.textContent='Failed: '+err.message;
+    }
+    st.style.color='var(--danger)';
+  }
 }
 function processAssets(csvText,src){
   const rows=parseCSV(csvText);if(!rows.length){toast('No data found','bad');return;}
@@ -455,9 +511,17 @@ function processAssets(csvText,src){
 }
 function populateFilterDropdowns(){
   const off=[...new Set(assets.map(a=>a.office).filter(Boolean))].sort();
-  const cls=[...new Set(assets.map(a=>a.assetClass).filter(Boolean))].sort();
   document.getElementById('list-office-filter').innerHTML='<option value="">All Offices</option>'+off.map(o=>`<option value="${escH(o)}">${o}</option>`).join('');
-  document.getElementById('list-class-filter').innerHTML='<option value="">All Asset Classes</option>'+cls.map(c=>`<option value="${escH(c)}">${c}</option>`).join('');
+  populateDeptDropdown('');
+}
+function populateDeptDropdown(selectedOffice){
+  const dept=[...new Set(assets.filter(a=>!selectedOffice||a.office===selectedOffice).map(a=>a.department).filter(Boolean))].sort();
+  document.getElementById('list-dept-filter').innerHTML='<option value="">All Departments</option>'+dept.map(d=>`<option value="${escH(d)}">${d}</option>`).join('');
+}
+function onOfficeFilterChange(){
+  const off=document.getElementById('list-office-filter').value;
+  populateDeptDropdown(off);
+  renderList();
 }
 
 // ── SESSION ───────────────────────────────────────────────────────────────────
@@ -465,6 +529,9 @@ function loadSession(){
   try{assets=JSON.parse(localStorage.getItem(STORE_ASSETS)||'[]');}catch(e){}
   try{results=JSON.parse(localStorage.getItem(STORE_RESULTS)||'{}');}catch(e){}
   try{disposeResults=JSON.parse(localStorage.getItem(STORE_DISPOSE)||'[]');}catch(e){}
+  // Sync any disposal records that predate the disposed-status feature
+  disposeResults.forEach(d=>{if(!results[d.assetNo]||results[d.assetNo].status!=='disposed'){if(!results[d.assetNo])results[d.assetNo]={};results[d.assetNo]={...results[d.assetNo],status:'disposed',scannedAt:d.disposedAt,raw:d.raw||d.assetNo};}});
+  if(disposeResults.length)saveResults();
   if(assets.length){
     updateProgress();updateHeader('saved session');populateFilterDropdowns();
     document.getElementById('progress-bar').style.display='';
@@ -503,9 +570,23 @@ const CAMERA_SVG=`<svg width="22" height="22" fill="none" viewBox="0 0 24 24" st
   <circle cx="18" cy="10.5" r="1" fill="currentColor" stroke="none"/>
 </svg>`;
 
+// Capture a still frame from a live <video> element (avoids iOS camera-conflict with getUserMedia)
+function snapshotFromVideo(videoId,onCapture){
+  const v=document.getElementById(videoId);
+  if(!v||v.readyState<v.HAVE_ENOUGH_DATA||!v.videoWidth)return false;
+  const canvas=document.createElement('canvas');
+  const maxW=900,scale=Math.min(1,maxW/v.videoWidth);
+  canvas.width=Math.round(v.videoWidth*scale);
+  canvas.height=Math.round(v.videoHeight*scale);
+  canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
+  onCapture(canvas.toDataURL('image/jpeg',0.85));
+  return true;
+}
+
+// Fallback: file picker (used on desktop or when no live stream)
 function openCamera(onCapture){
   const input=document.createElement('input');
-  input.type='file';input.accept='image/*';input.capture='environment';
+  input.type='file';input.accept='image/*';input.setAttribute('capture','environment');
   input.onchange=e=>{
     const file=e.target.files[0];if(!file)return;
     const reader=new FileReader();
@@ -528,13 +609,12 @@ function openCamera(onCapture){
 // ── VERIFY PHOTO ──────────────────────────────────────────────────────────────
 function takeVerifyPhoto(){
   if(!currentAsset)return;
-  openCamera(dataUrl=>{
+  const save=dataUrl=>{
     if(!results[currentAsset.assetNo])results[currentAsset.assetNo]={status:'',note:'',scannedAt:'',raw:''};
     results[currentAsset.assetNo].photo=dataUrl;
-    saveResults();
-    renderVerifyPhotoArea();
-    toast('Photo saved','ok');
-  });
+    saveResults();renderVerifyPhotoArea();toast('Photo saved','ok');
+  };
+  if(!snapshotFromVideo('scan-video',save))openCamera(save);
 }
 function renderVerifyPhotoArea(){
   const area=document.getElementById('verify-photo-area');if(!area)return;
@@ -544,6 +624,7 @@ function renderVerifyPhotoArea(){
       <img src="${photo}" alt="Asset photo">
       <div class="photo-thumb-actions">
         <button class="btn-save-photo" onclick="downloadVerifyPhoto()">Save to device</button>
+        <button class="btn-save-photo" onclick="takeVerifyPhoto()" style="background:var(--bg);">${CAMERA_SVG} Retake</button>
         <button class="btn-remove-photo" onclick="removeVerifyPhoto()">Remove</button>
       </div>
     </div>`;
@@ -564,11 +645,8 @@ function removeVerifyPhoto(){
 
 // ── DISPOSE PHOTO ─────────────────────────────────────────────────────────────
 function takeDisposePhoto(){
-  openCamera(dataUrl=>{
-    pendingDisposePhoto=dataUrl;
-    renderDisposePhotoArea();
-    toast('Asset photo saved','ok');
-  });
+  const save=dataUrl=>{pendingDisposePhoto=dataUrl;renderDisposePhotoArea();toast('Asset photo saved','ok');};
+  if(!snapshotFromVideo('dispose-video',save))openCamera(save);
 }
 function renderDisposePhotoArea(){
   const area=document.getElementById('dispose-photo-area');if(!area)return;
@@ -587,11 +665,8 @@ function renderDisposePhotoArea(){
 
 // ── SANITIZE PHOTO ────────────────────────────────────────────────────────────
 function takeSanitizePhoto(){
-  openCamera(dataUrl=>{
-    pendingSanitizePhoto=dataUrl;
-    renderSanitizePhotoArea();
-    toast('Proof photo saved','ok');
-  });
+  const save=dataUrl=>{pendingSanitizePhoto=dataUrl;renderSanitizePhotoArea();toast('Proof photo saved','ok');};
+  if(!snapshotFromVideo('dispose-video',save))openCamera(save);
 }
 function renderSanitizePhotoArea(){
   const area=document.getElementById('sanitize-photo-area');if(!area)return;
@@ -609,6 +684,32 @@ function renderSanitizePhotoArea(){
 }
 
 function downloadDataUrl(dataUrl,filename){const a=document.createElement('a');a.href=dataUrl;a.download=filename;a.click();}
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function resetAll(){
+  if(!confirm('Clear all assets, results and disposal records? This cannot be undone.'))return;
+  [STORE_ASSETS,STORE_RESULTS,STORE_URL,STORE_DISPOSE].forEach(k=>localStorage.removeItem(k));
+  assets=[];results={};disposeResults=[];
+  currentAsset=null;currentDisposeAssetNo=null;
+  pendingDisposePhoto=null;pendingSanitizePhoto=null;
+  lastScanned='';lastDispScanned='';
+  // Reset all UI — updateProgress() exits early when assets is empty so reset manually
+  document.getElementById('progress-bar').style.display='none';
+  document.getElementById('header-sub').textContent='Duke-NUS — Load asset list to begin';
+  ['stat-ok','stat-flag','stat-miss','stat-pend'].forEach(id=>document.getElementById(id).textContent='0');
+  document.getElementById('prog-fill').style.width='0%';
+  document.getElementById('prog-pct').textContent='0%';
+  document.getElementById('prog-label').textContent='0 of 0 assets checked';
+  document.getElementById('list-count-badge').textContent='List';
+  document.getElementById('result-area').innerHTML='';
+  document.getElementById('dispose-result-area').innerHTML='';
+  document.getElementById('dispose-list').innerHTML='';
+  document.getElementById('session-card').style.display='none';
+  document.getElementById('csv-url').value='';
+  document.getElementById('url-status').textContent='';
+  renderList();
+  toast('Reset complete — load a new FA list to begin','ok');
+}
 
 // ── VERIFY CAMERA ─────────────────────────────────────────────────────────────
 async function startCamera(){
@@ -648,8 +749,14 @@ function handleScan(rawQR,assetNo){
 function showResult(asset,rawQR){
   currentAsset=asset;
   const ex=results[asset.assetNo]||{};const status=ex.status||'';
+  const locVal=ex.locationOverride!==undefined?ex.locationOverride:asset.location;
+  const cusVal=ex.custodianOverride!==undefined?ex.custodianOverride:asset.custodian;
+  const locEdited=ex.locationOverride!==undefined&&ex.locationOverride!==asset.location;
+  const cusEdited=ex.custodianOverride!==undefined&&ex.custodianOverride!==asset.custodian;
   const rows=[
-    ['Description',asset.description],['Custodian',asset.custodian],['Location',asset.location],
+    ['Description',asset.description],
+    ['Custodian',cusVal,cusEdited],
+    ['Location',locVal,locEdited],
     ['Serial No.',asset.serial],['Office',asset.office],['Department',asset.department],
     ['Device Type',asset.deviceType],['Asset Class',asset.assetClass]
   ].filter(([,v])=>v);
@@ -660,13 +767,29 @@ function showResult(asset,rawQR){
         <div class="result-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
         <div><div class="result-asset">${asset.assetNo}</div><div class="result-desc">${asset.description||'—'}</div></div>
       </div>
-      <div class="result-body">${rows.map(([k,v])=>`<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${v}</span></div>`).join('')}</div>
+      <div class="result-body">${rows.map(([k,v,edited])=>`<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${escH(v)}${edited?'<span class="edited-tag">edited</span>':''}</span></div>`).join('')}</div>
       <div class="action-row">
         <button class="action-btn ok   ${status==='ok'  ?'active':''}" onclick="markAsset('ok')">✓ Verified</button>
         <button class="action-btn flag ${status==='flag'?'active':''}" onclick="markAsset('flag')">⚠ Flagged</button>
         <button class="action-btn bad  ${status==='bad' ?'active':''}" onclick="markAsset('bad')">✗ Missing</button>
       </div>
       <div class="note-row"><input type="text" id="verify-note" placeholder="Add note (optional)" value="${escH(ex.note||'')}" oninput="updateNote(this.value)"></div>
+      <div class="edit-section">
+        <button class="edit-toggle-btn" onclick="toggleEditDetails()">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Location / Custodian
+        </button>
+        <div class="edit-fields" id="edit-details" style="display:none;">
+          <div class="edit-field">
+            <label>Location</label>
+            <input type="text" id="edit-location" value="${escH(locVal||'')}" placeholder="Enter actual location" oninput="saveEditDetail('location',this.value)">
+          </div>
+          <div class="edit-field">
+            <label>Custodian / Owner</label>
+            <input type="text" id="edit-custodian" value="${escH(cusVal||'')}" placeholder="Enter actual custodian" oninput="saveEditDetail('custodian',this.value)">
+          </div>
+        </div>
+      </div>
       <div class="photo-section">
         <div class="photo-section-title">Asset Photo</div>
         <div id="verify-photo-area"></div>
@@ -701,6 +824,27 @@ function showNotFound(assetNo,rawQR){
     </div>`;
 }
 
+function toggleEditDetails(){
+  const el=document.getElementById('edit-details');
+  el.style.display=el.style.display==='none'?'flex':'none';
+}
+function saveEditDetail(field,value){
+  if(!currentAsset)return;
+  const assetNo=currentAsset.assetNo;
+  if(!results[assetNo])results[assetNo]={status:'ok',note:'',scannedAt:new Date().toISOString(),raw:assetNo};
+  results[assetNo][field+'Override']=value;
+  saveResults();
+  // Refresh displayed value + edited tag without re-rendering whole card
+  const rowKey=field==='location'?'Location':'Custodian';
+  document.querySelectorAll('.result-row').forEach(row=>{
+    if(row.querySelector('.result-key')?.textContent===rowKey){
+      const valEl=row.querySelector('.result-val');
+      const orig=field==='location'?currentAsset.location:currentAsset.custodian;
+      const edited=value!==orig;
+      valEl.innerHTML=escH(value)+(edited?'<span class="edited-tag">edited</span>':'');
+    }
+  });
+}
 function retakeVerify(){
   currentAsset=null;
   document.getElementById('result-area').innerHTML='';
@@ -851,7 +995,11 @@ function confirmDispose(){
     raw:lastDispScanned
   });
   pendingDisposePhoto=null;pendingSanitizePhoto=null;
+  // Mark as disposed in results so it shows in the List tab
+  if(!results[assetNo])results[assetNo]={};
+  results[assetNo]={...results[assetNo],status:'disposed',scannedAt:new Date().toISOString(),raw:lastDispScanned};
   try{localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));}catch(e){toast('Storage full','bad');}
+  saveResults();updateProgress();
   toast(`Disposal recorded: ${assetNo}`,'ok');
   if(asset)showDisposeResult(asset,lastDispScanned);
   renderDisposeList();
@@ -901,22 +1049,22 @@ function renderList(){
   const search=(document.getElementById('list-search')?.value||'').toLowerCase();
   const statusF=document.getElementById('list-status-filter')?.value||'';
   const officeF=document.getElementById('list-office-filter')?.value||'';
-  const classF=document.getElementById('list-class-filter')?.value||'';
+  const deptF=document.getElementById('list-dept-filter')?.value||'';
   const el=document.getElementById('asset-list');
   const list=assets.filter(a=>{
     const r=results[a.assetNo];const st=r?.status||'none';
     if(statusF&&st!==statusF)return false;
     if(officeF&&a.office!==officeF)return false;
-    if(classF&&a.assetClass!==classF)return false;
+    if(deptF&&a.department!==deptF)return false;
     if(search&&!`${a.assetNo} ${a.description} ${a.custodian} ${a.location} ${a.office} ${a.department} ${a.assetClass}`.toLowerCase().includes(search))return false;
     return true;
   });
   if(!list.length){el.innerHTML='<div class="empty"><p>No assets match</p></div>';return;}
-  const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',none:'Pending'};
-  const sCls={ok:'badge-ok',flag:'badge-flag',bad:'badge-bad',none:'badge-none'};
+  const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',disposed:'Disposed',none:'Pending'};
+  const sCls={ok:'badge-ok',flag:'badge-flag',bad:'badge-bad',disposed:'badge-disposed',none:'badge-none'};
   el.innerHTML=list.slice(0,200).map(a=>{
     const r=results[a.assetNo];const st=r?.status||'none';
-    const meta=[a.office,a.assetClass,a.location].filter(Boolean).join(' · ');
+    const meta=[a.office,a.department,a.location].filter(Boolean).join(' · ');
     return `<div class="asset-item" onclick="jumpToAsset('${escJ(a.assetNo)}')">
       <div class="asset-dot ${st}"></div>
       <div class="asset-info"><div class="asset-no">${a.assetNo}</div><div class="asset-name">${a.description||'—'}</div><div class="asset-meta">${meta}</div></div>
@@ -925,15 +1073,58 @@ function renderList(){
   }).join('');
   if(list.length>200)el.innerHTML+=`<div class="loading">Showing 200 of ${list.length} — refine search</div>`;
 }
-function jumpToAsset(assetNo){const asset=findAsset(assetNo);if(asset){showResult(asset,assetNo);switchTab('scan');}}
+function jumpToAsset(assetNo){
+  const asset=findAsset(assetNo);if(!asset)return;
+  const r=results[assetNo]||{};
+  const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',disposed:'Disposed',none:'Pending'};
+  const sCls={ok:'badge-ok',flag:'badge-flag',bad:'badge-bad',disposed:'badge-disposed',none:'badge-none'};
+  const st=r.status||'none';
+  document.getElementById('ds-assetno').textContent=assetNo;
+  document.getElementById('ds-badge').innerHTML=`<span class="asset-badge ${sCls[st]}">${sLabel[st]}</span>`;
+  const dispRec=disposeResults.find(d=>d.assetNo===assetNo);
+  const sanitizeLabel={na:'N/A',formatted:'Formatted / Wiped',destroyed:'Physically Destroyed'};
+  const rows=[
+    ['Description',asset.description],
+    ['Custodian',asset.custodian],
+    ['Location',asset.location],
+    ['Serial No',asset.serial],
+    ['Office',asset.office],
+    ['Asset Class',asset.assetClass],
+    ['Device Type',asset.deviceType],
+    ['Note', st==='disposed'?dispRec?.note:r.note],
+    st==='disposed'
+      ?['Disposed At', dispRec?.disposedAt?new Date(dispRec.disposedAt).toLocaleString():'—']
+      :['Verified At', r.scannedAt?new Date(r.scannedAt).toLocaleString():'—'],
+    st==='disposed'?['Sanitization', sanitizeLabel[dispRec?.sanitizationMethod||'na']]:null,
+  ].filter(x=>x&&x[1]).map(([l,v])=>`<div class="sheet-row"><div class="sheet-label">${l}</div><div class="sheet-value">${escH(v)}</div></div>`).join('');
+  let photos='';
+  if(st==='disposed'){
+    if(dispRec?.photo)photos+=`<div class="photo-section-title" style="padding:10px 0 4px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;">Device Photo</div><img class="sheet-photo" src="${dispRec.photo}" alt="Device photo">`;
+    if(dispRec?.sanitizePhoto)photos+=`<div class="photo-section-title" style="padding:10px 0 4px;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;">Sanitization Photo</div><img class="sheet-photo" src="${dispRec.sanitizePhoto}" alt="Sanitization photo">`;
+  } else {
+    if(r.photo)photos=`<img class="sheet-photo" src="${r.photo}" alt="Asset photo">`;
+  }
+  const saveBtn=r.photo&&st!=='disposed'?`<button class="btn btn-outline" style="flex:1" onclick="downloadDataUrl(results['${escJ(assetNo)}'].photo,'asset_${escJ(assetNo)}.jpg')">Save photo</button>`:'';
+  document.getElementById('ds-body').innerHTML=rows+photos+`<div class="sheet-actions">${saveBtn}</div>`;
+  document.getElementById('detail-backdrop').classList.add('open');
+}
+function closeDetailSheet(e){
+  if(e&&e.target!==document.getElementById('detail-backdrop'))return;
+  document.getElementById('detail-backdrop').classList.remove('open');
+}
 
 // ── EXPORT VERIFY ─────────────────────────────────────────────────────────────
 function exportReport(){
   if(!assets.length){toast('No assets loaded','bad');return;}
-  const cols=['Asset Number','Description','Custodian','Location','Serial No','Office','Department','Device Type','Asset Class','Status','Note','Photo Taken','Scanned At','QR Raw'];
+  const cols=['Asset Number','Description','Custodian','Custodian (Edited)','Location','Location (Edited)','Serial No','Office','Department','Device Type','Asset Class','Status','Note','Photo Taken','Scanned At','QR Raw'];
   const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
   const rows=[cols.join(',')];
-  assets.forEach(a=>{const r=results[a.assetNo]||{};rows.push([a.assetNo,a.description,a.custodian,a.location,a.serial,a.office,a.department,a.deviceType,a.assetClass,r.status||'pending',r.note||'',r.photo?'Yes':'No',r.scannedAt||'',r.raw||''].map(esc).join(','));});
+  assets.forEach(a=>{
+    const r=results[a.assetNo]||{};
+    const cus=r.custodianOverride!==undefined?r.custodianOverride:a.custodian;
+    const loc=r.locationOverride!==undefined?r.locationOverride:a.location;
+    rows.push([a.assetNo,a.description,a.custodian,cus!==a.custodian?cus:'',a.location,loc!==a.location?loc:'',a.serial,a.office,a.department,a.deviceType,a.assetClass,r.status||'pending',r.note||'',r.photo?'Yes':'No',r.scannedAt||'',r.raw||''].map(esc).join(','));
+  });
   const blob=new Blob([rows.join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`asset_verify_${new Date().toISOString().slice(0,10)}.csv`;a.click();
   toast(`Exported ${assets.length} records`,'ok');
@@ -984,5 +1175,21 @@ function toast(msg,type){
   document.getElementById('tab-setup').classList.add('active');
 })();
 </script>
+
+<!-- ASSET DETAIL SHEET -->
+<div class="sheet-backdrop" id="detail-backdrop" onclick="closeDetailSheet(event)">
+  <div class="sheet" id="detail-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-asset-no" id="ds-assetno"></div>
+        <div id="ds-badge" style="margin-top:4px;"></div>
+      </div>
+      <button class="sheet-close" onclick="closeDetailSheet()">✕</button>
+    </div>
+    <div id="ds-body"></div>
+  </div>
+</div>
+
 </body>
 </html>
