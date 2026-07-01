@@ -100,6 +100,7 @@ input:focus,select:focus{border-color:var(--accent);}
 .action-btn.active.ok  {background:var(--success);color:#fff;}
 .action-btn.active.flag{background:var(--warning);color:#fff;}
 .action-btn.active.bad {background:var(--danger);color:#fff;}
+.dispose-confirm-btn:disabled{opacity:0.35;cursor:not-allowed;}
 .note-row{padding:0 14px 10px;background:var(--bg);}
 .note-row input{font-size:12px;padding:6px 10px;border-radius:6px;}
 
@@ -116,8 +117,11 @@ input:focus,select:focus{border-color:var(--accent);}
 .btn-save-photo{border-color:var(--accent);color:var(--accent);}
 .btn-remove-photo{border-color:var(--danger);color:var(--danger);}
 
-/* SANITIZATION */
+/* SANITIZATION / FORM UPLOAD */
 .sanitize-section{border-top:2px solid var(--border);background:var(--bg);padding:10px 14px 12px;}
+.form-section{border-top:1px solid var(--border);background:var(--bg);padding:10px 14px 10px;}
+.form-section-title{font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.dispose-req-hint{font-size:11px;color:var(--warning);line-height:1.8;padding:2px 0;}
 .sanitize-title{font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
 .sanitize-opts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
 .sanitize-opt{cursor:pointer;}
@@ -143,14 +147,14 @@ input:focus,select:focus{border-color:var(--accent);}
 .rescan-btn:hover{border-color:var(--accent);color:var(--accent);}
 
 /* LIST */
-.list-filter{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
-.list-filter-row{display:flex;gap:8px;margin-bottom:6px;}
+.list-filter{padding:7px 12px;background:var(--surface);border-bottom:1px solid var(--border);}
+.list-filter-row{display:flex;gap:6px;margin-bottom:4px;}
 .list-filter-row:last-child{margin-bottom:0;}
-.list-filter-row input{flex:1;font-size:13px;padding:7px 10px;}
-.list-filter-row select{font-size:12px;padding:7px 8px;}
-.asset-list{padding:8px 16px;}
-.asset-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);}
-.asset-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.list-filter-row input{flex:1;font-size:12px;padding:6px 8px;}
+.list-filter-row select{font-size:11px;padding:6px 6px;}
+.asset-list{padding:5px 10px;}
+.asset-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 10px;margin-bottom:4px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);}
+.asset-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .asset-dot.ok{background:var(--success);}
 .asset-dot.flag{background:var(--warning);}
 .asset-dot.bad{background:var(--danger);}
@@ -158,10 +162,10 @@ input:focus,select:focus{border-color:var(--accent);}
 .asset-dot.disposed{background:#7c3aed;}
 .badge-disposed{background:#f5f3ff;color:#7c3aed;}
 .asset-info{flex:1;min-width:0;}
-.asset-no{font-size:13px;font-weight:600;}
+.asset-no{font-size:12px;font-weight:600;}
 .asset-name{font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
-.asset-meta{font-size:11px;color:var(--text-2);}
-.asset-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;flex-shrink:0;}
+.asset-meta{font-size:10px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.asset-badge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;flex-shrink:0;}
 .badge-ok{background:#f0fdf4;color:var(--success);}
 .badge-flag{background:#fffbeb;color:var(--warning);}
 .badge-bad{background:#fef2f2;color:var(--danger);}
@@ -183,6 +187,7 @@ input:focus,select:focus{border-color:var(--accent);}
 .nav-tab{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:500;color:var(--text-3);background:none;border:none;cursor:pointer;transition:color .15s;}
 .nav-tab.active{color:var(--accent);}
 .nav-tab.dispose-tab.active{color:var(--danger);}
+.nav-tab:disabled{opacity:0.28;cursor:not-allowed;}
 .nav-tab svg{width:20px;height:20px;}
 #toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;transition:opacity .3s;pointer-events:none;opacity:0;white-space:nowrap;}
 .empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
@@ -191,17 +196,39 @@ input:focus,select:focus{border-color:var(--accent);}
 .chip{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:20px;font-size:11px;padding:2px 8px;color:var(--text-2);}
 .btn-reset{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;background:none;border:1.5px solid var(--danger);color:var(--danger);cursor:pointer;transition:background .15s;}
 .btn-reset:hover,.btn-reset:active{background:#fef2f2;}
+/* Verifier modal */
+.verifier-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:800;display:none;align-items:center;justify-content:center;padding:20px;}
+.verifier-overlay.open{display:flex;}
+.verifier-box{background:var(--surface);border-radius:var(--radius);padding:24px 20px;width:100%;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.25);}
+.verifier-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+.verifier-sub{font-size:12px;color:var(--text-3);margin-bottom:14px;line-height:1.5;}
+.verifier-field{margin-bottom:12px;}
+.verifier-field label{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px;}
+.verifier-pick-btn{width:100%;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;background:var(--bg);border:1px solid var(--border);color:var(--text);cursor:pointer;text-align:left;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;transition:all .15s;}
+.verifier-pick-btn:hover,.verifier-pick-btn:active{border-color:var(--accent);background:#eff6ff;color:var(--accent);}
+.verifier-pick-btn.other{color:var(--text-3);border-style:dashed;}
+.verifier-bar{padding:6px 14px;font-size:11px;background:var(--surface);border-bottom:1px solid var(--border);display:none;align-items:center;justify-content:space-between;}
+.verifier-bar.show{display:flex;}
+.verifier-bar-name{font-weight:600;color:var(--text);}
+.verifier-change{font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;font-weight:600;}
+/* Verifier list (setup) */
+.vl-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.vl-item:last-child{border-bottom:none;}
+.vl-name{flex:1;font-weight:500;}
+.vl-id{font-size:11px;color:var(--text-3);}
+.vl-del{background:none;border:none;color:var(--danger);cursor:pointer;font-size:15px;padding:0 2px;line-height:1;flex-shrink:0;}
 /* Detail sheet */
 .sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:flex-end;}
 .sheet-backdrop.open{display:flex;}
-.sheet{background:var(--surface);border-radius:18px 18px 0 0;width:100%;max-width:480px;margin:0 auto;padding:20px 16px 36px;max-height:88vh;overflow-y:auto;}
-.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
-.sheet-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.sheet{background:var(--surface);border-radius:18px 18px 0 0;width:100%;max-width:480px;margin:0 auto;padding:14px 14px 32px;max-height:88vh;overflow-y:auto;}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 10px;}
+.sheet-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
 .sheet-asset-no{font-size:16px;font-weight:700;}
 .sheet-close{font-size:20px;color:var(--text-3);background:none;border:none;cursor:pointer;line-height:1;padding:0 4px;}
-.sheet-row{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;}
-.sheet-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;}
-.sheet-value{font-size:13px;color:var(--text);}
+.sheet-row{display:flex;align-items:baseline;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);margin-bottom:0;}
+.sheet-row:last-of-type{border-bottom:none;}
+.sheet-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;width:88px;}
+.sheet-value{font-size:12px;color:var(--text);flex:1;word-break:break-word;}
 .sheet-photo{width:100%;border-radius:10px;margin-top:6px;object-fit:cover;max-height:160px;}
 .sheet-photo-block{margin-bottom:10px;}
 .sheet-photo-label{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
@@ -261,16 +288,32 @@ input:focus,select:focus{border-color:var(--accent);}
     <div id="url-status" style="display:none;"></div>
     <input type="url" id="csv-url" style="display:none;">
   </div>
-  <div class="setup-card" style="background:none;border:none;box-shadow:none;padding-top:0;">
-    <div style="font-size:11px;color:var(--text-3);line-height:1.7;">
-      <strong style="color:var(--text-2);">Scanner:</strong> <span id="barcode-support-note">Initialising…</span><br>
-      <strong style="color:var(--text-2);">QR format:</strong> <span class="chip">611 100088446-1</span> — prefix before space stripped automatically.
+  <div class="setup-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="setup-title" style="margin:0;">Verifier List</div>
+      <button id="admin-lock-btn" onclick="openAdminPanel()" title="Admin access" style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:14px;color:var(--text-3);">🔒</button>
+    </div>
+    <div id="verifier-admin-panel" style="display:none;">
+      <div style="height:1px;background:var(--border);margin:12px 0;"></div>
+      <div class="setup-sub" style="margin-bottom:8px;">Manage team members who can scan assets.</div>
+      <div id="verifier-list-display"></div>
+      <div style="display:flex;gap:6px;margin-top:10px;">
+        <input type="text" id="vl-name" placeholder="Full name" style="flex:1.5;">
+        <input type="text" id="vl-id" placeholder="Staff ID" style="flex:1;">
+        <button onclick="addVerifierToList()" style="padding:8px 14px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Add</button>
+      </div>
+      <button onclick="lockAdminPanel()" style="width:100%;margin-top:10px;padding:8px;background:none;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text-3);cursor:pointer;">🔒 Lock</button>
     </div>
   </div>
+  <span id="barcode-support-note" style="display:none;"></span>
 </div>
 
 <!-- VERIFY -->
 <div id="page-scan" class="page">
+  <div class="verifier-bar" id="verifier-bar-scan">
+    <span style="color:var(--text-3);">Scanning as: <span class="verifier-bar-name" id="verifier-bar-scan-name"></span></span>
+    <button class="verifier-change" onclick="changeVerifier()">Change</button>
+  </div>
   <div class="scan-wrap">
     <video id="scan-video" autoplay muted playsinline></video>
     <canvas id="scan-canvas"></canvas>
@@ -292,6 +335,10 @@ input:focus,select:focus{border-color:var(--accent);}
 
 <!-- DISPOSE -->
 <div id="page-dispose" class="page">
+  <div class="verifier-bar" id="verifier-bar-dispose">
+    <span style="color:var(--text-3);">Disposing as: <span class="verifier-bar-name" id="verifier-bar-dispose-name"></span></span>
+    <button class="verifier-change" onclick="changeVerifier()">Change</button>
+  </div>
   <div class="scan-wrap">
     <video id="dispose-video" autoplay muted playsinline></video>
     <canvas id="dispose-canvas"></canvas>
@@ -339,20 +386,20 @@ input:focus,select:focus{border-color:var(--accent);}
 </div>
 
 <nav class="bottom-nav">
-  <button class="nav-tab" id="tab-setup" onclick="switchTab('setup')">
+  <button class="nav-tab" id="tab-setup" onclick="switchTab('setup')" disabled>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Load
   </button>
-  <button class="nav-tab" id="tab-scan" onclick="switchTab('scan')">
+  <button class="nav-tab" id="tab-scan" onclick="switchTab('scan')" disabled>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Verify
   </button>
-  <button class="nav-tab dispose-tab" id="tab-dispose" onclick="switchTab('dispose')">
+  <button class="nav-tab dispose-tab" id="tab-dispose" onclick="switchTab('dispose')" disabled>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Dispose
   </button>
-  <button class="nav-tab" id="tab-list" onclick="switchTab('list')">
+  <button class="nav-tab" id="tab-list" onclick="switchTab('list')" disabled>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
     <span id="list-count-badge">List</span>
   </button>
-  <button class="nav-tab" onclick="exportReport()">
+  <button class="nav-tab" id="tab-export" onclick="exportReport()" disabled>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
   </button>
 </nav>
@@ -365,6 +412,7 @@ let assets=[],results={},disposeResults=[];
 let scanActive=false,camStream=null,scanAF=null,lastScanned='',lastScannedT=0;
 let dispScanActive=false,dispCamStream=null,dispScanAF=null,lastDispScanned='',lastDispScannedT=0;
 let barcodeDetector=null,zxingReader=null;
+let verifierName='',verifierStaffId='';
 
 // Current asset references — avoids all complex string escaping in onclick handlers
 let currentAsset=null;          // asset shown in verify result card
@@ -374,7 +422,8 @@ let currentDisposeAssetNo=null; // asset shown in dispose result card
 let pendingDisposePhoto=null;
 let pendingSanitizePhoto=null;
 
-const STORE_ASSETS='av_assets',STORE_RESULTS='av_results',STORE_URL='av_last_url',STORE_DISPOSE='av_dispose';
+const STORE_ASSETS='av_assets',STORE_RESULTS='av_results',STORE_URL='av_last_url',STORE_DISPOSE='av_dispose',STORE_VERIFIERS='av_verifiers',STORE_ADMIN_PIN='av_admin_pin';
+let verifiers=[];
 
 // ── SCANNER ───────────────────────────────────────────────────────────────────
 async function initScanner(){
@@ -633,19 +682,19 @@ function renderVerifyPhotoArea(){
   const snapBtn=document.getElementById('float-snap-btn');
   const hint=document.getElementById('scan-hint-text');
   if(photo){
-    area.innerHTML=`<div class="photo-thumb-wrap">
+    area.innerHTML=`<div style="padding:0 14px 10px;background:var(--bg);border-top:1px solid var(--border);"><div class="photo-thumb-wrap" style="margin-top:8px;">
       <img src="${photo}" alt="Asset photo">
       <div class="photo-thumb-actions">
         <button class="btn-save-photo" onclick="downloadVerifyPhoto()">Save to device</button>
         <button class="btn-save-photo" onclick="takeVerifyPhoto()" style="background:var(--bg);">${CAMERA_SVG} Retake</button>
         <button class="btn-remove-photo" onclick="removeVerifyPhoto()">Remove</button>
       </div>
-    </div>`;
+    </div></div>`;
     if(snapBtn)snapBtn.style.display='none';
     if(hint)hint.textContent='Point at QR code or barcode';
   } else {
-    area.innerHTML=`<button class="snap-btn" onclick="takeVerifyPhoto()">${CAMERA_SVG} Take Asset Photo</button>`;
-    if(snapBtn){snapBtn.style.display='flex';}
+    area.innerHTML='';
+    if(snapBtn)snapBtn.style.display='flex';
     if(hint)hint.textContent='Tap 📷 to capture photo';
   }
 }
@@ -688,19 +737,32 @@ function takeDisposePhoto(){
   const save=dataUrl=>{pendingDisposePhoto=dataUrl;renderDisposePhotoArea();updateDisposeSnapBtn();toast('Asset photo saved','ok');};
   if(!snapshotFromVideo('dispose-video',save))openCamera(save);
 }
+function updateDisposeConfirmBtn(){
+  const btn=document.getElementById('dispose-confirm-btn');if(!btn)return;
+  const hasPhoto=!!pendingDisposePhoto;
+  const hasSanitize=!!document.querySelector('input[name="disp-sanitize"]:checked');
+  btn.disabled=!(hasPhoto&&hasSanitize);
+  const req=document.getElementById('dispose-req-status');if(!req)return;
+  if(hasPhoto&&hasSanitize){req.textContent='';return;}
+  const items=[];
+  if(!hasPhoto)items.push('📷 Take a photo of the item');
+  if(!hasSanitize)items.push('📋 Select a sanitization method');
+  req.innerHTML=items.join('<br>');
+}
 function renderDisposePhotoArea(){
   const area=document.getElementById('dispose-photo-area');if(!area)return;
   if(pendingDisposePhoto){
-    area.innerHTML=`<div class="photo-thumb-wrap" style="margin-top:8px;">
+    area.innerHTML=`<div style="padding:0 14px 10px;background:var(--bg);"><div class="photo-thumb-wrap" style="margin-top:8px;">
       <img src="${pendingDisposePhoto}" alt="Asset photo">
       <div class="photo-thumb-actions">
         <button class="btn-save-photo" onclick="downloadDataUrl(pendingDisposePhoto,'dispose_asset.jpg')">Save</button>
         <button class="btn-remove-photo" onclick="pendingDisposePhoto=null;renderDisposePhotoArea();updateDisposeSnapBtn()">Remove</button>
       </div>
-    </div>`;
+    </div></div>`;
   } else {
     area.innerHTML='';
   }
+  updateDisposeConfirmBtn();
 }
 
 // ── SANITIZE PHOTO ────────────────────────────────────────────────────────────
@@ -723,7 +785,22 @@ function renderSanitizePhotoArea(){
   }
 }
 
-function downloadDataUrl(dataUrl,filename){const a=document.createElement('a');a.href=dataUrl;a.download=filename;a.click();}
+async function downloadDataUrl(dataUrl,filename){
+  // On iOS, use Web Share API so the user can tap "Save Image" → Photos app
+  if(navigator.share&&navigator.canShare&&/iPhone|iPad|iPod/i.test(navigator.userAgent)){
+    try{
+      const res=await fetch(dataUrl);
+      const blob=await res.blob();
+      const file=new File([blob],filename,{type:'image/jpeg'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:filename});
+        return;
+      }
+    }catch(e){if(e.name==='AbortError')return;} // user cancelled share sheet
+  }
+  // Desktop / Android fallback: trigger download
+  const a=document.createElement('a');a.href=dataUrl;a.download=filename;a.click();
+}
 
 // ── RESET ─────────────────────────────────────────────────────────────────────
 function resetAll(){
@@ -805,7 +882,12 @@ function showResult(asset,rawQR){
     <div class="result-card ${status||'ok'}">
       <div class="result-header">
         <div class="result-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <div><div class="result-asset">${asset.assetNo}</div><div class="result-desc">${asset.description||'—'}</div></div>
+        <div style="flex:1;"><div class="result-asset">${asset.assetNo}</div><div class="result-desc">${asset.description||'—'}</div></div>
+        <button onclick="toggleEditDetails()" style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;background:var(--bg);border:1px solid var(--border);color:var(--text-2);cursor:pointer;flex-shrink:0;">✏ Edit</button>
+      </div>
+      <div class="edit-fields" id="edit-details" style="display:none;padding:8px 14px;background:var(--bg);border-bottom:1px solid var(--border);">
+        <div class="edit-field"><label>Location</label><input type="text" id="edit-location" value="${escH(locVal||'')}" placeholder="Enter actual location" oninput="saveEditDetail('location',this.value)"></div>
+        <div class="edit-field"><label>Custodian / Owner</label><input type="text" id="edit-custodian" value="${escH(cusVal||'')}" placeholder="Enter actual custodian" oninput="saveEditDetail('custodian',this.value)"></div>
       </div>
       <div class="result-body">${rows.map(([k,v,edited])=>`<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${escH(v)}${edited?'<span class="edited-tag">edited</span>':''}</span></div>`).join('')}</div>
       <div class="action-row">
@@ -814,26 +896,7 @@ function showResult(asset,rawQR){
         <button class="action-btn bad  ${status==='bad' ?'active':''}" onclick="markAsset('bad')">✗ Missing</button>
       </div>
       <div class="note-row"><input type="text" id="verify-note" placeholder="Add note (optional)" value="${escH(ex.note||'')}" oninput="updateNote(this.value)"></div>
-      <div class="edit-section">
-        <button class="edit-toggle-btn" onclick="toggleEditDetails()">
-          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Edit Location / Custodian
-        </button>
-        <div class="edit-fields" id="edit-details" style="display:none;">
-          <div class="edit-field">
-            <label>Location</label>
-            <input type="text" id="edit-location" value="${escH(locVal||'')}" placeholder="Enter actual location" oninput="saveEditDetail('location',this.value)">
-          </div>
-          <div class="edit-field">
-            <label>Custodian / Owner</label>
-            <input type="text" id="edit-custodian" value="${escH(cusVal||'')}" placeholder="Enter actual custodian" oninput="saveEditDetail('custodian',this.value)">
-          </div>
-        </div>
-      </div>
-      <div class="photo-section">
-        <div class="photo-section-title">Asset Photo</div>
-        <div id="verify-photo-area"></div>
-      </div>
+      <div id="verify-photo-area"></div>
       <div class="rescan-row"><button class="rescan-btn" onclick="retakeVerify()">↩ Rescan another</button></div>
     </div>`;
 
@@ -899,7 +962,7 @@ function markAsset(status,silent){
   if(!currentAsset)return;
   const assetNo=currentAsset.assetNo;const rawQR=currentAsset._rawQR||assetNo;
   if(!results[assetNo])results[assetNo]={};
-  results[assetNo]={...results[assetNo],status,scannedAt:new Date().toISOString(),raw:rawQR};
+  results[assetNo]={...results[assetNo],status,scannedAt:new Date().toISOString(),raw:rawQR,verifiedBy:verifierName,staffId:verifierStaffId};
   saveResults();updateProgress();
   if(!silent)toast({ok:'✓ Verified',flag:'⚠ Flagged',bad:'✗ Marked missing'}[status],status==='ok'?'ok':'bad');
   document.querySelectorAll('#result-area .action-btn').forEach(b=>{b.classList.remove('active');if(b.classList.contains(status))b.classList.add('active');});
@@ -946,29 +1009,29 @@ function showDisposeResult(asset,rawQR){
   const done=disposeResults.some(d=>d.assetNo===asset.assetNo);
   const rows=[
     ['Description',asset.description],['Office',asset.office],['Department',asset.department],
-    ['Asset Class',asset.assetClass],['Device Type',asset.deviceType],['Location',asset.location],['Serial No.',asset.serial]
+    ['Device Type',asset.deviceType],['Location',asset.location],['Serial No.',asset.serial]
   ].filter(([,v])=>v);
 
   const confirmBlock=done
     ?`<div class="already-disposed">Already recorded for disposal</div>`
-    :`<div class="action-row" style="flex-direction:column;gap:8px;">
-        <input type="text" id="dispose-note" placeholder="Reason / note (optional)" style="font-size:12px;padding:6px 10px;border-radius:6px;">
-        <button class="dispose-confirm-btn" onclick="confirmDispose()">Confirm Disposal</button>
-      </div>
-      <div class="sanitize-section">
+    :`<div class="sanitize-section">
         <div class="sanitize-title">Storage Sanitization</div>
         <div class="sanitize-opts">
-          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="na" checked><span>N/A</span></label>
-          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="formatted"><span>Formatted / Wiped</span></label>
-          <label class="sanitize-opt destroy"><input type="radio" name="disp-sanitize" value="destroyed"><span>Physically Destroyed</span></label>
+          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="na" onclick="updateDisposeConfirmBtn()"><span>N/A</span></label>
+          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="formatted" onclick="updateDisposeConfirmBtn()"><span>Formatted / Wiped</span></label>
+          <label class="sanitize-opt destroy"><input type="radio" name="disp-sanitize" value="destroyed" onclick="updateDisposeConfirmBtn()"><span>Physically Destroyed</span></label>
         </div>
-        <button class="snap-btn" onclick="takeSanitizePhoto()" style="margin-bottom:6px;">${CAMERA_SVG} Take Proof Photo (sanitization)</button>
         <div id="sanitize-photo-area"></div>
       </div>
-      <div class="photo-section">
-        <div class="photo-section-title">Asset Photo</div>
-        <button class="snap-btn" onclick="takeDisposePhoto()">${CAMERA_SVG} Take Asset Photo</button>
-        <div id="dispose-photo-area"></div>
+      <div id="dispose-photo-area"></div>
+      <div class="form-section">
+        <div class="form-section-title">Condemnation Form No.</div>
+        <input type="text" id="condemn-form-no" placeholder="e.g. CF-2026-001" style="font-size:12px;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);color:var(--text);">
+      </div>
+      <div class="action-row" style="flex-direction:column;gap:6px;">
+        <input type="text" id="dispose-note" placeholder="Reason / note (optional)" style="font-size:12px;padding:6px 10px;border-radius:6px;">
+        <div id="dispose-req-status" class="dispose-req-hint"></div>
+        <button id="dispose-confirm-btn" class="dispose-confirm-btn" onclick="confirmDispose()" disabled>Confirm Disposal</button>
       </div>`;
 
   document.getElementById('dispose-result-area').innerHTML=`
@@ -991,24 +1054,24 @@ function showDisposeNotFound(assetNo,rawQR){
         <div><div class="result-asset">${assetNo}</div><div class="result-desc">Not found — record anyway?</div></div>
       </div>
       <div class="result-body"><div class="result-row"><span class="result-key">Raw scan</span><span class="result-val">${rawQR}</span></div></div>
-      <div class="action-row" style="flex-direction:column;gap:8px;">
-        <input type="text" id="dispose-note" placeholder="Reason / note" style="font-size:12px;padding:6px 10px;border-radius:6px;">
-        <button class="dispose-confirm-btn" onclick="confirmDispose()">Record Disposal</button>
-      </div>
       <div class="sanitize-section">
         <div class="sanitize-title">Storage Sanitization</div>
         <div class="sanitize-opts">
-          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="na" checked><span>N/A</span></label>
-          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="formatted"><span>Formatted / Wiped</span></label>
-          <label class="sanitize-opt destroy"><input type="radio" name="disp-sanitize" value="destroyed"><span>Physically Destroyed</span></label>
+          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="na" onclick="updateDisposeConfirmBtn()"><span>N/A</span></label>
+          <label class="sanitize-opt"><input type="radio" name="disp-sanitize" value="formatted" onclick="updateDisposeConfirmBtn()"><span>Formatted / Wiped</span></label>
+          <label class="sanitize-opt destroy"><input type="radio" name="disp-sanitize" value="destroyed" onclick="updateDisposeConfirmBtn()"><span>Physically Destroyed</span></label>
         </div>
-        <button class="snap-btn" onclick="takeSanitizePhoto()" style="margin-bottom:6px;">${CAMERA_SVG} Take Proof Photo (sanitization)</button>
         <div id="sanitize-photo-area"></div>
       </div>
-      <div class="photo-section">
-        <div class="photo-section-title">Asset Photo</div>
-        <button class="snap-btn" onclick="takeDisposePhoto()">${CAMERA_SVG} Take Asset Photo</button>
-        <div id="dispose-photo-area"></div>
+      <div id="dispose-photo-area"></div>
+      <div class="form-section">
+        <div class="form-section-title">Condemnation Form No.</div>
+        <input type="text" id="condemn-form-no" placeholder="e.g. CF-2026-001" style="font-size:12px;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);color:var(--text);">
+      </div>
+      <div class="action-row" style="flex-direction:column;gap:6px;">
+        <input type="text" id="dispose-note" placeholder="Reason / note" style="font-size:12px;padding:6px 10px;border-radius:6px;">
+        <div id="dispose-req-status" class="dispose-req-hint"></div>
+        <button id="dispose-confirm-btn" class="dispose-confirm-btn" onclick="confirmDispose()" disabled>Record Disposal</button>
       </div>
       <div class="rescan-row"><button class="rescan-btn" onclick="retakeDispose()">↩ Rescan another</button></div>
     </div>`;
@@ -1021,6 +1084,7 @@ function retakeDispose(){
   st.innerHTML=`<svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg><span>Disposal mode — scan item to record…</span>`;
   lastDispScanned='';lastDispScannedT=0;
   updateDisposeSnapBtn();
+  startDisposeCamera();
 }
 
 function confirmDispose(){
@@ -1035,7 +1099,9 @@ function confirmDispose(){
     sanitizationMethod:sanitizeMethod,
     photo:pendingDisposePhoto||null,
     sanitizePhoto:pendingSanitizePhoto||null,
-    raw:lastDispScanned
+    condemnationFormNo:document.getElementById('condemn-form-no')?.value.trim()||'',
+    raw:lastDispScanned,
+    disposedBy:verifierName,staffId:verifierStaffId
   });
   pendingDisposePhoto=null;pendingSanitizePhoto=null;
   // Mark as disposed in results so it shows in the List tab
@@ -1046,8 +1112,23 @@ function confirmDispose(){
   toast(`Disposal recorded: ${assetNo}`,'ok');
   if(asset)showDisposeResult(asset,lastDispScanned);
   renderDisposeList();
+  stopDisposeCamera();
+  currentDisposeAssetNo=null;updateDisposeSnapBtn();
 }
 
+function deleteDisposeRecord(assetNo){
+  if(!confirm(`Delete disposal record for ${assetNo}?`))return;
+  disposeResults=disposeResults.filter(d=>d.assetNo!==assetNo);
+  if(results[assetNo]?.status==='disposed')delete results[assetNo];
+  localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));
+  saveResults();updateProgress();renderDisposeList();toast('Record deleted','ok');
+}
+function removeDisposePhoto(assetNo,field){
+  const rec=disposeResults.find(d=>d.assetNo===assetNo);if(!rec)return;
+  rec[field]=null;
+  localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));
+  renderDisposeList();toast('Photo removed','ok');
+}
 function renderDisposeList(){
   const el=document.getElementById('dispose-list');
   document.getElementById('dispose-count').textContent=disposeResults.length;
@@ -1064,23 +1145,29 @@ function renderDisposeList(){
       ${meta?`<div class="dispose-meta">${meta}</div>`:''}
       <div class="dispose-meta">Storage: <span class="s-badge ${sCls[sm]}">${sLabel[sm]}</span></div>
       ${d.note?`<div class="dispose-meta" style="color:var(--text-3);">Note: ${d.note}</div>`:''}
-      <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
-        ${d.photo?`<a href="${d.photo}" download="asset_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Asset Photo</a>`:''}
-        ${d.sanitizePhoto?`<a href="${d.sanitizePhoto}" download="sanitize_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Sanitize Proof</a>`:''}
+      ${d.condemnationFormNo?`<div class="dispose-meta">Condemnation Form No.: <strong>${escH(d.condemnationFormNo)}</strong></div>`:''}
+      <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;align-items:center;">
+        ${d.photo?`<a href="${d.photo}" download="asset_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Asset Photo</a><button onclick="removeDisposePhoto('${escJ(d.assetNo)}','photo')" style="font-size:10px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;">✕ Photo</button>`:''}
+        ${d.sanitizePhoto?`<a href="${d.sanitizePhoto}" download="sanitize_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Sanitize Proof</a><button onclick="removeDisposePhoto('${escJ(d.assetNo)}','sanitizePhoto')" style="font-size:10px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;">✕ Proof</button>`:''}
       </div>
-      <div class="dispose-time">${time}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+        <div class="dispose-time">${time}</div>
+        <button onclick="deleteDisposeRecord('${escJ(d.assetNo)}')" style="font-size:10px;color:var(--danger);background:none;border:1px solid var(--danger);border-radius:5px;padding:2px 8px;cursor:pointer;font-weight:600;">Delete Record</button>
+      </div>
     </div>`;
   }).join('');
 }
 
 function exportDisposal(){
   if(!disposeResults.length){toast('No records to export','bad');return;}
-  const cols=['Asset Number','Description','Office','Department','Device Type','Asset Class','Disposed At','Note','Sanitization Method','Asset Photo Taken','Sanitize Proof Taken','QR Raw'];
+  const cols=['Asset Number','Description','Office','Department','Device Type','Asset Class','Disposed At','Note','Sanitization Method','Asset Photo Taken','Sanitize Proof Taken','Condemnation Form No.','Disposed By','Staff ID','QR Raw'];
   const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
   const rows=[cols.join(','),...disposeResults.map(d=>[
     d.assetNo,d.description,d.office,d.department,d.deviceType,d.assetClass,d.disposedAt,d.note,
     {na:'N/A',formatted:'Formatted/Wiped',destroyed:'Physically Destroyed'}[d.sanitizationMethod||'na'],
-    d.photo?'Yes':'No',d.sanitizePhoto?'Yes':'No',d.raw
+    d.photo?'Yes':'No',d.sanitizePhoto?'Yes':'No',
+    d.condemnationFormNo||'',
+    d.disposedBy||'',d.staffId||'',d.raw
   ].map(esc).join(','))];
   const blob=new Blob([rows.join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`disposal_${new Date().toISOString().slice(0,10)}.csv`;a.click();
@@ -1103,7 +1190,7 @@ function renderList(){
     return true;
   });
   if(!list.length){el.innerHTML='<div class="empty"><p>No assets match</p></div>';return;}
-  const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',disposed:'Disposed',none:'Pending'};
+  const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',disposed:'Confirmed Disposal',none:'Pending'};
   const sCls={ok:'badge-ok',flag:'badge-flag',bad:'badge-bad',disposed:'badge-disposed',none:'badge-none'};
   el.innerHTML=list.slice(0,200).map(a=>{
     const r=results[a.assetNo];const st=r?.status||'none';
@@ -1119,7 +1206,7 @@ function renderList(){
 function jumpToAsset(assetNo){
   const asset=findAsset(assetNo);if(!asset)return;
   const r=results[assetNo]||{};
-  const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',disposed:'Disposed',none:'Pending'};
+  const sLabel={ok:'Verified',flag:'Flagged',bad:'Missing',disposed:'Confirmed Disposal',none:'Pending'};
   const sCls={ok:'badge-ok',flag:'badge-flag',bad:'badge-bad',disposed:'badge-disposed',none:'badge-none'};
   const st=r.status||'none';
   document.getElementById('ds-assetno').textContent=assetNo;
@@ -1139,6 +1226,9 @@ function jumpToAsset(assetNo){
       ?['Disposed At', dispRec?.disposedAt?new Date(dispRec.disposedAt).toLocaleString():'—']
       :['Verified At', r.scannedAt?new Date(r.scannedAt).toLocaleString():'—'],
     st==='disposed'?['Sanitization', sanitizeLabel[dispRec?.sanitizationMethod||'na']]:null,
+    st==='disposed'
+      ?(dispRec?.disposedBy?['Verified By', dispRec.disposedBy+(dispRec.staffId?` (${dispRec.staffId})`:'')]:null)
+      :(r.verifiedBy?['Verified By', r.verifiedBy+(r.staffId?` (${r.staffId})`:'')]:null),
   ].filter(x=>x&&x[1]).map(([l,v])=>`<div class="sheet-row"><div class="sheet-label">${l}</div><div class="sheet-value">${escH(v)}</div></div>`).join('');
   let photos='';
   if(st==='disposed'){
@@ -1160,18 +1250,147 @@ function closeDetailSheet(e){
 // ── EXPORT VERIFY ─────────────────────────────────────────────────────────────
 function exportReport(){
   if(!assets.length){toast('No assets loaded','bad');return;}
-  const cols=['Asset Number','Description','Custodian','Custodian (Edited)','Location','Location (Edited)','Serial No','Office','Department','Device Type','Asset Class','Status','Note','Photo Taken','Scanned At','QR Raw'];
+  const cols=['Asset Number','Description','Custodian','Custodian (Edited)','Location','Location (Edited)','Serial No','Office','Department','Device Type','Asset Class','Status','Note','Photo Taken','Scanned At','Verified By','Staff ID','QR Raw'];
   const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
   const rows=[cols.join(',')];
   assets.forEach(a=>{
     const r=results[a.assetNo]||{};
     const cus=r.custodianOverride!==undefined?r.custodianOverride:a.custodian;
     const loc=r.locationOverride!==undefined?r.locationOverride:a.location;
-    rows.push([a.assetNo,a.description,a.custodian,cus!==a.custodian?cus:'',a.location,loc!==a.location?loc:'',a.serial,a.office,a.department,a.deviceType,a.assetClass,r.status||'pending',r.note||'',r.photo?'Yes':'No',r.scannedAt||'',r.raw||''].map(esc).join(','));
+    rows.push([a.assetNo,a.description,a.custodian,cus!==a.custodian?cus:'',a.location,loc!==a.location?loc:'',a.serial,a.office,a.department,a.deviceType,a.assetClass,r.status||'pending',r.note||'',r.photo?'Yes':'No',r.scannedAt||'',r.verifiedBy||'',r.staffId||'',r.raw||''].map(esc).join(','));
   });
   const blob=new Blob([rows.join('\n')],{type:'text/csv'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`asset_verify_${new Date().toISOString().slice(0,10)}.csv`;a.click();
   toast(`Exported ${assets.length} records`,'ok');
+}
+
+// ── ADMIN PIN ─────────────────────────────────────────────────────────────────
+let _adminPinMode='enter';
+function openAdminPanel(){
+  const stored=localStorage.getItem(STORE_ADMIN_PIN);
+  _adminPinMode=stored?'enter':'set';
+  document.getElementById('admin-pin-title').textContent=stored?'Admin Access':'Set Admin PIN';
+  document.getElementById('admin-pin-sub').textContent=stored?'Enter PIN to manage verifiers.':'Create a PIN to protect this section.';
+  document.getElementById('admin-pin-submit-btn').textContent=stored?'Unlock':'Set PIN';
+  document.getElementById('admin-pin-input').value='';
+  document.getElementById('admin-pin-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('admin-pin-input').focus(),100);
+}
+function submitAdminPin(){
+  const input=document.getElementById('admin-pin-input').value;
+  if(!input){toast('Enter a PIN','bad');return;}
+  if(_adminPinMode==='set'){
+    if(input.length<4){toast('PIN must be at least 4 characters','bad');return;}
+    localStorage.setItem(STORE_ADMIN_PIN,input);
+    document.getElementById('admin-pin-modal').classList.remove('open');
+    unlockAdminPanel();toast('PIN set — keep it safe','ok');
+  } else {
+    if(input===localStorage.getItem(STORE_ADMIN_PIN)){
+      document.getElementById('admin-pin-modal').classList.remove('open');
+      unlockAdminPanel();
+    } else {
+      toast('Incorrect PIN','bad');
+      document.getElementById('admin-pin-input').value='';
+    }
+  }
+}
+function unlockAdminPanel(){
+  document.getElementById('verifier-admin-panel').style.display='';
+  document.getElementById('admin-lock-btn').textContent='🔓';
+}
+function lockAdminPanel(){
+  document.getElementById('verifier-admin-panel').style.display='none';
+  document.getElementById('admin-lock-btn').textContent='🔒';
+}
+
+// ── VERIFIER LIST (setup) ─────────────────────────────────────────────────────
+function loadVerifiers(){
+  try{verifiers=JSON.parse(localStorage.getItem(STORE_VERIFIERS)||'[]');}catch(e){verifiers=[];}
+}
+function saveVerifiers(){localStorage.setItem(STORE_VERIFIERS,JSON.stringify(verifiers));}
+function addVerifierToList(){
+  const name=document.getElementById('vl-name').value.trim();
+  const sid=document.getElementById('vl-id').value.trim();
+  if(!name){toast('Enter a name','bad');return;}
+  if(verifiers.some(v=>v.name.toLowerCase()===name.toLowerCase())){toast('Name already in list','bad');return;}
+  verifiers.push({name,staffId:sid});
+  saveVerifiers();
+  document.getElementById('vl-name').value='';
+  document.getElementById('vl-id').value='';
+  renderVerifierListSetup();
+  toast(`Added ${name}`,'ok');
+}
+function removeVerifierFromList(i){
+  verifiers.splice(i,1);saveVerifiers();renderVerifierListSetup();
+}
+function renderVerifierListSetup(){
+  const el=document.getElementById('verifier-list-display');if(!el)return;
+  if(!verifiers.length){el.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:4px 0 2px;">No verifiers added yet.</div>';return;}
+  el.innerHTML=`<div style="margin-bottom:4px;">${verifiers.map((v,i)=>`<div class="vl-item">
+    <span class="vl-name">${escH(v.name)}</span>
+    <span class="vl-id">${escH(v.staffId)}</span>
+    <button class="vl-del" onclick="removeVerifierFromList(${i})">✕</button>
+  </div>`).join('')}</div>`;
+}
+
+// ── VERIFIER MODAL ────────────────────────────────────────────────────────────
+let _verifierCallback=null;
+function renderVerifierPicker(){
+  const picker=document.getElementById('verifier-picker');
+  const manual=document.getElementById('verifier-manual-section');
+  const sub=document.getElementById('verifier-modal-sub');
+  if(!verifiers.length){
+    picker.innerHTML='';manual.style.display='';
+    sub.textContent='Your name and staff ID will be recorded with every asset.';
+    return;
+  }
+  sub.textContent='Select your name to begin.';
+  picker.innerHTML=verifiers.map((v,i)=>`<button class="verifier-pick-btn" onclick="selectVerifier(${i})">
+    <span>${escH(v.name)}</span>
+    <span style="font-size:11px;color:var(--text-3);font-weight:400;">${escH(v.staffId)}</span>
+  </button>`).join('')+`<button class="verifier-pick-btn other" onclick="showManualVerifier()">Other…</button>`;
+  manual.style.display='none';
+}
+function selectVerifier(i){
+  const v=verifiers[i];
+  verifierName=v.name;verifierStaffId=v.staffId;
+  applyVerifier();
+}
+function showManualVerifier(){
+  document.getElementById('verifier-picker').innerHTML='';
+  document.getElementById('verifier-name-input').value='';
+  document.getElementById('verifier-staffid-input').value='';
+  document.getElementById('verifier-manual-section').style.display='';
+  document.getElementById('verifier-modal-sub').textContent='Enter your name to begin.';
+}
+function ensureVerifier(callback){
+  if(verifierName){callback();return;}
+  _verifierCallback=callback;
+  renderVerifierPicker();
+  document.getElementById('verifier-overlay').classList.add('open');
+}
+function changeVerifier(){
+  verifierName='';verifierStaffId='';
+  _verifierCallback=null;
+  renderVerifierPicker();
+  document.getElementById('verifier-overlay').classList.add('open');
+}
+function confirmVerifier(){
+  const name=document.getElementById('verifier-name-input').value.trim();
+  const sid=document.getElementById('verifier-staffid-input').value.trim();
+  if(!name){toast('Please enter your name','bad');return;}
+  verifierName=name;verifierStaffId=sid;
+  applyVerifier();
+}
+function applyVerifier(){
+  document.getElementById('verifier-overlay').classList.remove('open');
+  const label=verifierName+(verifierStaffId?` (${verifierStaffId})`:'');
+  ['scan','dispose'].forEach(t=>{
+    document.getElementById(`verifier-bar-${t}-name`).textContent=label;
+    document.getElementById(`verifier-bar-${t}`).classList.add('show');
+  });
+  document.querySelectorAll('.nav-tab').forEach(b=>b.disabled=false);
+  if(_verifierCallback){_verifierCallback();_verifierCallback=null;}
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
@@ -1182,8 +1401,8 @@ function switchTab(tab){
   document.getElementById('page-'+tab).classList.add('active');
   document.getElementById('tab-'+tab)?.classList.add('active');
   currentTab=tab;
-  if(tab==='scan'){startCamera();stopDisposeCamera();}
-  else if(tab==='dispose'){startDisposeCamera();stopCamera();}
+  if(tab==='scan'){stopDisposeCamera();startCamera();}
+  else if(tab==='dispose'){stopCamera();startDisposeCamera();}
   else{stopCamera();stopDisposeCamera();}
   if(tab==='list')renderList();
   if(tab==='dispose')renderDisposeList();
@@ -1215,8 +1434,13 @@ function toast(msg,type){
   document.documentElement.setAttribute('data-theme',theme);
   if(theme==='dark')document.getElementById('theme-icon').innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
   const savedUrl=localStorage.getItem(STORE_URL);if(savedUrl)document.getElementById('csv-url').value=savedUrl;
-  initScanner();loadSession();
+  initScanner();loadSession();loadVerifiers();renderVerifierListSetup();
   document.getElementById('tab-setup').classList.add('active');
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){stopCamera();stopDisposeCamera();}
+    else{if(currentTab==='scan')startCamera();else if(currentTab==='dispose')startDisposeCamera();}
+  });
+  document.addEventListener('DOMContentLoaded',()=>ensureVerifier(()=>{}));
 })();
 </script>
 
@@ -1232,6 +1456,40 @@ function toast(msg,type){
       <button class="sheet-close" onclick="closeDetailSheet()">✕</button>
     </div>
     <div id="ds-body"></div>
+  </div>
+</div>
+
+<!-- ADMIN PIN MODAL -->
+<div class="verifier-overlay" id="admin-pin-modal">
+  <div class="verifier-box">
+    <div class="verifier-title" id="admin-pin-title">Admin Access</div>
+    <div class="verifier-sub" id="admin-pin-sub">Enter PIN to manage verifiers.</div>
+    <div class="verifier-field">
+      <label>PIN</label>
+      <input type="password" id="admin-pin-input" placeholder="••••" inputmode="numeric" maxlength="8" onkeydown="if(event.key==='Enter')submitAdminPin()">
+    </div>
+    <button class="btn btn-primary" id="admin-pin-submit-btn" onclick="submitAdminPin()" style="margin-top:4px;">Unlock</button>
+    <button onclick="document.getElementById('admin-pin-modal').classList.remove('open')" style="width:100%;padding:8px;margin-top:8px;background:none;border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;color:var(--text-2);">Cancel</button>
+  </div>
+</div>
+
+<!-- VERIFIER MODAL -->
+<div class="verifier-overlay" id="verifier-overlay">
+  <div class="verifier-box">
+    <div class="verifier-title">Who are you?</div>
+    <div class="verifier-sub" id="verifier-modal-sub">Select your name to begin.</div>
+    <div id="verifier-picker"></div>
+    <div id="verifier-manual-section">
+      <div class="verifier-field">
+        <label>Full Name *</label>
+        <input type="text" id="verifier-name-input" placeholder="e.g. John Tan" autocomplete="name">
+      </div>
+      <div class="verifier-field">
+        <label>Staff ID</label>
+        <input type="text" id="verifier-staffid-input" placeholder="e.g. IT0123" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="verifier-confirm-btn" onclick="confirmVerifier()" style="margin-top:4px;">Confirm &amp; Start</button>
+    </div>
   </div>
 </div>
 
