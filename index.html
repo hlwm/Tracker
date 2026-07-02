@@ -1520,17 +1520,18 @@ function openSignIn(){
     return;
   }
   const stored=localStorage.getItem(STORE_ADMIN_PIN);
+  if(!stored){toast('No PIN set yet — set one now.','ok');openAdminPanel();return;}
   document.getElementById('signin-pin-input').value='';
   document.getElementById('signin-pin-step').style.display='';
   document.getElementById('signin-name-step').style.display='none';
-  document.getElementById('verifier-modal-sub').textContent=stored?'Enter PIN to continue.':'No PIN set — ask admin to configure PIN first.';
+  document.getElementById('verifier-modal-sub').textContent='Enter PIN to continue.';
   document.getElementById('verifier-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('signin-pin-input').focus(),100);
 }
 function checkSigninPin(){
   const input=document.getElementById('signin-pin-input').value;
   const stored=localStorage.getItem(STORE_ADMIN_PIN);
-  if(!stored){toast('No PIN configured. Use ⚙ admin panel in the header.','bad');return;}
+  if(!stored){toast('No PIN configured. Tap the sign-in icon again to set one.','bad');return;}
   if(input!==stored){toast('Incorrect PIN','bad');document.getElementById('signin-pin-input').value='';return;}
   document.getElementById('signin-pin-step').style.display='none';
   document.getElementById('signin-name-step').style.display='';
