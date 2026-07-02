@@ -660,7 +660,7 @@ async function syncVerifyRow(assetNo){
   if(r.photo&&r.photo.startsWith('data:')){payload.photoBase64=r.photo;payload.photoFileName=`asset_${assetNo}.jpg`;}
   const res=await postToSheet(payload);
   if(res&&res.ok){
-    r.syncPending=false;
+    r.syncPending=false;r.synced=true;
     if(res.photoUrl){r.photo=res.photoUrl;if(currentAsset&&currentAsset.assetNo===assetNo)renderVerifyPhotoArea();}
   } else {
     r.syncPending=true;
@@ -678,7 +678,7 @@ async function syncDisposeRow(rec){
   if(rec.sanitizePhoto&&rec.sanitizePhoto.startsWith('data:')){payload.sanitizePhotoBase64=rec.sanitizePhoto;payload.sanitizePhotoFileName=`sanitize_${rec.assetNo}.jpg`;}
   const res=await postToSheet(payload);
   if(res&&res.ok){
-    rec.syncPending=false;
+    rec.syncPending=false;rec.synced=true;
     if(res.photoUrl)rec.photo=res.photoUrl;
     if(res.sanitizePhotoUrl)rec.sanitizePhoto=res.sanitizePhotoUrl;
   } else {
@@ -692,10 +692,10 @@ function retryPendingSyncs(){
   let n=0;
   Object.keys(results).forEach(assetNo=>{
     const r=results[assetNo];
-    if(r.syncPending||(r.photo&&r.photo.startsWith('data:'))){syncVerifyRow(assetNo);n++;}
+    if(!r.synced||(r.photo&&r.photo.startsWith('data:'))){syncVerifyRow(assetNo);n++;}
   });
   disposeResults.forEach(rec=>{
-    if(rec.syncPending||(rec.photo&&rec.photo.startsWith('data:'))||(rec.sanitizePhoto&&rec.sanitizePhoto.startsWith('data:'))){syncDisposeRow(rec);n++;}
+    if(!rec.synced||(rec.photo&&rec.photo.startsWith('data:'))||(rec.sanitizePhoto&&rec.sanitizePhoto.startsWith('data:'))){syncDisposeRow(rec);n++;}
   });
   toast(n?`Retrying ${n} pending record(s)…`:'Nothing pending','ok');
 }
@@ -878,7 +878,7 @@ function renderDisposePhotoArea(){
       </div>
     </div></div>`;
   } else {
-    area.innerHTML='';
+    area.innerHTML=`<div style="padding:0 14px 10px;background:var(--bg);"><button class="snap-btn" onclick="takeDisposePhoto()">${CAMERA_SVG} Take Device Photo</button></div>`;
   }
   updateDisposeConfirmBtn();
 }
@@ -899,7 +899,7 @@ function renderSanitizePhotoArea(){
       </div>
     </div>`;
   } else {
-    area.innerHTML='';
+    area.innerHTML=`<button class="snap-btn" onclick="takeSanitizePhoto()">${CAMERA_SVG} Take Sanitization Proof</button>`;
   }
 }
 
@@ -1133,6 +1133,7 @@ function manualDispSearch(){
 }
 function disposeScanLoop(){
   if(!dispScanActive)return;
+  if(currentDisposeAssetNo){dispScanAF=requestAnimationFrame(disposeScanLoop);return;} // pause detection while a result is being reviewed — otherwise the same code re-scans mid-review and wipes the form
   processFrame('dispose-video','dispose-canvas').then(raw=>{
     if(raw){const now=Date.now();if(raw!==lastDispScanned||now-lastDispScannedT>4000){lastDispScanned=raw;lastDispScannedT=now;handleDisposeScan(raw,parseAssetNo(raw));}}
   }).finally(()=>{if(dispScanActive)dispScanAF=requestAnimationFrame(disposeScanLoop);});
@@ -1191,6 +1192,7 @@ function showDisposeResult(asset,rawQR){
       ${confirmBlock}
       <div class="rescan-row"><button class="rescan-btn" onclick="retakeDispose()">↩ Rescan another</button></div>
     </div>`;
+  if(!done){renderDisposePhotoArea();renderSanitizePhotoArea();}
 }
 
 function showDisposeNotFound(assetNo,rawQR){
@@ -1222,6 +1224,7 @@ function showDisposeNotFound(assetNo,rawQR){
       </div>
       <div class="rescan-row"><button class="rescan-btn" onclick="retakeDispose()">↩ Rescan another</button></div>
     </div>`;
+  renderDisposePhotoArea();renderSanitizePhotoArea();
 }
 
 function retakeDispose(){
@@ -1254,7 +1257,7 @@ function confirmDispose(){
   pendingDisposePhoto=null;pendingSanitizePhoto=null;
   // Mark as disposed in results so it shows in the List tab
   if(!results[assetNo])results[assetNo]={};
-  results[assetNo]={...results[assetNo],status:'disposed',scannedAt:new Date().toISOString(),raw:lastDispScanned};
+  results[assetNo]={...results[assetNo],status:'disposed',scannedAt:new Date().toISOString(),raw:lastDispScanned,synced:true};
   try{localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));}catch(e){toast('Storage full','bad');}
   saveResults();updateProgress();
   if(sheetsUrl)syncDisposeRow(rec);
