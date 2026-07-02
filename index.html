@@ -15,7 +15,8 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;}
 input,select{font-family:inherit;font-size:14px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;outline:none;width:100%;}
 input:focus,select:focus{border-color:var(--accent);}
 
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;}
+.top-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);}
+.header{padding:10px 16px;display:flex;align-items:center;gap:10px;}
 .header-logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .header-logo svg{color:#fff;}
 .header-title{font-size:15px;font-weight:700;flex:1;}
@@ -35,7 +36,7 @@ input:focus,select:focus{border-color:var(--accent);}
 .stat.warn .stat-n{color:var(--warning);}
 .stat.bad .stat-n{color:var(--danger);}
 
-.page{display:none;flex:1;overflow-y:auto;padding-bottom:80px;}
+.page{display:none;flex:1;overflow-y:auto;padding-bottom:20px;}
 .page.active{display:block;}
 
 .setup-card{margin:20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
@@ -183,12 +184,17 @@ input:focus,select:focus{border-color:var(--accent);}
 .dispose-meta{font-size:11px;color:var(--text-2);margin-top:3px;}
 .dispose-time{font-size:10px;color:var(--text-3);margin-top:2px;}
 
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:200;}
-.nav-tab{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:500;color:var(--text-3);background:none;border:none;cursor:pointer;transition:color .15s;}
-.nav-tab.active{color:var(--accent);}
-.nav-tab.dispose-tab.active{color:var(--danger);}
+.top-nav{display:flex;}
+.nav-tab{flex:1;padding:7px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:600;color:var(--text-3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-tab.dispose-tab.active{color:var(--danger);border-bottom-color:var(--danger);}
 .nav-tab:disabled{opacity:0.28;cursor:not-allowed;}
-.nav-tab svg{width:20px;height:20px;}
+.nav-tab svg{width:15px;height:15px;}
+.cam-toggle-btn{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:8px;padding:4px 9px;font-size:11px;font-weight:600;cursor:pointer;z-index:10;display:flex;align-items:center;gap:4px;}
+.cam-toggle-btn.off{background:rgba(200,0,0,.7);}
+.manual-entry-row{display:flex;gap:8px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
+.manual-entry-row input{flex:1;font-size:13px;padding:7px 10px;border-radius:8px;}
+.manual-entry-row button{padding:7px 16px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;flex-shrink:0;border:none;cursor:pointer;}
 #toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;transition:opacity .3s;pointer-events:none;opacity:0;white-space:nowrap;}
 .empty{text-align:center;padding:3rem 1rem;color:var(--text-3);}
 .empty p{font-size:13px;margin-top:8px;}
@@ -239,6 +245,7 @@ input:focus,select:focus{border-color:var(--accent);}
 </head>
 <body>
 
+<div class="top-bar">
 <div class="header">
   <div class="header-logo">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17h7M17 14v7"/></svg>
@@ -247,9 +254,31 @@ input:focus,select:focus{border-color:var(--accent);}
     <div class="header-title">Asset Tracker</div>
     <div class="header-sub" id="header-sub">Duke-NUS — Load asset list to begin</div>
   </div>
+  <button class="icon-btn" id="admin-lock-btn" onclick="openSignIn()" title="Sign in / Change user">
+    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  </button>
   <button class="icon-btn" onclick="toggleTheme()">
     <svg id="theme-icon" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   </button>
+</div>
+<nav class="top-nav">
+  <button class="nav-tab" id="tab-setup" onclick="switchTab('setup')" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Load
+  </button>
+  <button class="nav-tab" id="tab-scan" onclick="switchTab('scan')" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Verify
+  </button>
+  <button class="nav-tab dispose-tab" id="tab-dispose" onclick="switchTab('dispose')" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Dispose
+  </button>
+  <button class="nav-tab" id="tab-list" onclick="switchTab('list')" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+    <span id="list-count-badge">List</span>
+  </button>
+  <button class="nav-tab" id="tab-export" onclick="exportReport()" disabled>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
+  </button>
+</nav>
 </div>
 
 <div class="progress-bar" id="progress-bar" style="display:none;">
@@ -288,22 +317,15 @@ input:focus,select:focus{border-color:var(--accent);}
     <div id="url-status" style="display:none;"></div>
     <input type="url" id="csv-url" style="display:none;">
   </div>
-  <div class="setup-card">
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-      <div class="setup-title" style="margin:0;">Verifier List</div>
-      <button id="admin-lock-btn" onclick="openAdminPanel()" title="Admin access" style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:14px;color:var(--text-3);">🔒</button>
+  <div class="setup-card" id="sheets-card">
+    <div class="setup-title">Google Sheet Sync</div>
+    <div class="setup-sub">Paste your Apps Script Web App URL — every Verify/Dispose record and photo is sent straight to Google Sheets + Drive. Nothing stays on this phone.</div>
+    <div class="url-row">
+      <input type="url" id="sheets-url" placeholder="https://script.google.com/macros/s/.../exec">
+      <button onclick="saveSheetsUrl()">Save</button>
     </div>
-    <div id="verifier-admin-panel" style="display:none;">
-      <div style="height:1px;background:var(--border);margin:12px 0;"></div>
-      <div class="setup-sub" style="margin-bottom:8px;">Manage team members who can scan assets.</div>
-      <div id="verifier-list-display"></div>
-      <div style="display:flex;gap:6px;margin-top:10px;">
-        <input type="text" id="vl-name" placeholder="Full name" style="flex:1.5;">
-        <input type="text" id="vl-id" placeholder="Staff ID" style="flex:1;">
-        <button onclick="addVerifierToList()" style="padding:8px 14px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Add</button>
-      </div>
-      <button onclick="lockAdminPanel()" style="width:100%;margin-top:10px;padding:8px;background:none;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text-3);cursor:pointer;">🔒 Lock</button>
-    </div>
+    <div id="sheets-status" style="font-size:12px;margin-top:8px;color:var(--text-3);">Not connected.</div>
+    <button class="btn btn-outline" onclick="retryPendingSyncs()" style="margin-top:10px;">🔄 Retry Pending Syncs</button>
   </div>
   <span id="barcode-support-note" style="display:none;"></span>
 </div>
@@ -322,9 +344,14 @@ input:focus,select:focus{border-color:var(--accent);}
     </div>
     <div class="scan-hint" id="scan-hint-text">Point at QR code or barcode</div>
     <div class="scan-mode-badge" id="scan-mode-badge">Loading…</div>
+    <button class="cam-toggle-btn" id="cam-toggle-scan" onclick="toggleScanCamera()">⏹ On</button>
     <button class="float-snap-btn" id="float-snap-btn" onclick="takeVerifyPhoto()" title="Take photo">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
     </button>
+  </div>
+  <div class="manual-entry-row">
+    <input type="text" id="manual-scan-input" placeholder="No barcode? Type asset no. here…" onkeydown="if(event.key==='Enter')manualScanSearch()">
+    <button onclick="manualScanSearch()">Search</button>
   </div>
   <div class="scan-status idle" id="scan-status">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -347,9 +374,14 @@ input:focus,select:focus{border-color:var(--accent);}
     </div>
     <div class="scan-hint" id="disp-hint-text">Scan item being disposed</div>
     <div class="scan-mode-badge" id="dispose-mode-badge">Loading…</div>
+    <button class="cam-toggle-btn" id="cam-toggle-disp" onclick="toggleDispCamera()">⏹ On</button>
     <button class="float-snap-btn" id="float-disp-snap-btn" onclick="floatDisposeSnap()" title="Take photo" style="display:none;">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
     </button>
+  </div>
+  <div class="manual-entry-row">
+    <input type="text" id="manual-disp-input" placeholder="No barcode? Type asset no. here…" onkeydown="if(event.key==='Enter')manualDispSearch()">
+    <button onclick="manualDispSearch()">Search</button>
   </div>
   <div class="scan-status idle" id="dispose-status">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -385,24 +417,6 @@ input:focus,select:focus{border-color:var(--accent);}
   <div class="asset-list" id="asset-list"></div>
 </div>
 
-<nav class="bottom-nav">
-  <button class="nav-tab" id="tab-setup" onclick="switchTab('setup')" disabled>
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Load
-  </button>
-  <button class="nav-tab" id="tab-scan" onclick="switchTab('scan')" disabled>
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Verify
-  </button>
-  <button class="nav-tab dispose-tab" id="tab-dispose" onclick="switchTab('dispose')" disabled>
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Dispose
-  </button>
-  <button class="nav-tab" id="tab-list" onclick="switchTab('list')" disabled>
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
-    <span id="list-count-badge">List</span>
-  </button>
-  <button class="nav-tab" id="tab-export" onclick="exportReport()" disabled>
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
-  </button>
-</nav>
 
 <div id="toast"></div>
 
@@ -422,8 +436,9 @@ let currentDisposeAssetNo=null; // asset shown in dispose result card
 let pendingDisposePhoto=null;
 let pendingSanitizePhoto=null;
 
-const STORE_ASSETS='av_assets',STORE_RESULTS='av_results',STORE_URL='av_last_url',STORE_DISPOSE='av_dispose',STORE_VERIFIERS='av_verifiers',STORE_ADMIN_PIN='av_admin_pin';
+const STORE_ASSETS='av_assets',STORE_RESULTS='av_results',STORE_URL='av_last_url',STORE_DISPOSE='av_dispose',STORE_VERIFIERS='av_verifiers',STORE_ADMIN_PIN='av_admin_pin',STORE_SHEETS_URL='av_sheets_url';
 let verifiers=[];
+let sheetsUrl='';
 
 // ── SCANNER ───────────────────────────────────────────────────────────────────
 async function initScanner(){
@@ -446,10 +461,12 @@ async function initScanner(){
         ZXing.BarcodeFormat.UPC_A,ZXing.BarcodeFormat.UPC_E,
         ZXing.BarcodeFormat.ITF,ZXing.BarcodeFormat.DATA_MATRIX,
       ]);
-      zxingReader=new ZXing.BrowserMultiFormatReader(hints);
+      hints.set(ZXing.DecodeHintType.TRY_HARDER,true);
+      zxingReader=new ZXing.MultiFormatReader();
+      zxingReader.setHints(hints);
       setScanBadge('QR + Barcode');
-      noteEl.textContent='Full support via ZXing — Code 128, Code 39, EAN, QR…';noteEl.style.color='var(--success)';return;
-    }catch(e){noteEl.textContent='ZXing error: '+e.message;}
+      if(noteEl)noteEl.textContent='ZXing ready';return;
+    }catch(e){if(noteEl)noteEl.textContent='ZXing error: '+e.message;}
   }
   setScanBadge('QR only');noteEl.textContent='QR codes only.';
 }
@@ -467,7 +484,12 @@ async function processFrame(videoId,canvasId){
   canvas.width=video.videoWidth;canvas.height=video.videoHeight;
   canvas.getContext('2d').drawImage(video,0,0);
   if(zxingReader){
-    try{const r=zxingReader.decodeFromCanvas(canvas);if(r)return r.getText();}catch(e){}
+    try{
+      const lum=new ZXing.HTMLCanvasElementLuminanceSource(canvas);
+      const bmp=new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(lum));
+      const r=zxingReader.decode(bmp);
+      if(r)return r.getText();
+    }catch(e){}
   }
   // jsQR fallback — always runs if ZXing found nothing (guaranteed QR detection)
   const img=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
@@ -567,7 +589,7 @@ function processAssets(csvText,src){
   localStorage.setItem(STORE_ASSETS,JSON.stringify(assets));
   updateProgress();updateHeader(src);populateFilterDropdowns();
   document.getElementById('progress-bar').style.display='';
-  toast(`Loaded ${assets.length} assets`,'ok');switchTab('scan');
+  toast(`Loaded ${assets.length} assets`,'ok');enableScanTabs();switchTab('scan');
 }
 function populateFilterDropdowns(){
   const off=[...new Set(assets.map(a=>a.office).filter(Boolean))].sort();
@@ -584,6 +606,101 @@ function onOfficeFilterChange(){
   renderList();
 }
 
+// ── GOOGLE SHEET SYNC ─────────────────────────────────────────────────────────
+function loadSheetsUrl(){
+  sheetsUrl=localStorage.getItem(STORE_SHEETS_URL)||'';
+  const input=document.getElementById('sheets-url');if(input)input.value=sheetsUrl;
+  const st=document.getElementById('sheets-status');
+  if(st)st.textContent=sheetsUrl?'Saved — tap Save to re-test the connection.':'Not connected.';
+}
+function saveSheetsUrl(){
+  const v=document.getElementById('sheets-url').value.trim();
+  if(!v){toast('Enter a Web App URL','bad');return;}
+  sheetsUrl=v;localStorage.setItem(STORE_SHEETS_URL,v);
+  testSheetsConnection();
+}
+async function testSheetsConnection(){
+  const st=document.getElementById('sheets-status');
+  st.textContent='Checking…';st.style.color='var(--text-3)';
+  const res=await postToSheet({type:'ping'});
+  if(res&&res.ok){st.textContent='✓ '+(res.message||'Connected');st.style.color='var(--success)';}
+  else{st.textContent='✗ '+(res&&res.error||'Could not connect — check the URL');st.style.color='var(--danger)';}
+}
+async function postToSheet(payload){
+  if(!sheetsUrl)return{ok:false,error:'No Sheet URL configured'};
+  try{
+    const resp=await fetch(sheetsUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    return await resp.json();
+  }catch(e){return{ok:false,error:e.message};}
+}
+function openOrDownloadPhoto(url,filename){
+  if(!url)return;
+  if(url.startsWith('data:'))downloadDataUrl(url,filename);
+  else window.open(url,'_blank');
+}
+
+const syncTimers={};
+function queueVerifySync(assetNo){
+  if(!sheetsUrl||!assetNo)return;
+  clearTimeout(syncTimers[assetNo]);
+  syncTimers[assetNo]=setTimeout(()=>syncVerifyRow(assetNo),1200);
+}
+async function syncVerifyRow(assetNo){
+  const r=results[assetNo];if(!r)return;
+  const asset=findAsset(assetNo)||{assetNo};
+  const cus=r.custodianOverride!==undefined?r.custodianOverride:asset.custodian;
+  const loc=r.locationOverride!==undefined?r.locationOverride:asset.location;
+  const payload={
+    type:'verify',assetNo,description:asset.description||'',custodian:cus||'',location:loc||'',
+    serial:asset.serial||'',office:asset.office||'',department:asset.department||'',
+    deviceType:asset.deviceType||'',assetClass:asset.assetClass||'',
+    status:r.status||'',note:r.note||'',scannedAt:r.scannedAt||'',
+    verifiedBy:r.verifiedBy||'',staffId:r.staffId||'',rawQR:r.raw||''
+  };
+  if(r.photo&&r.photo.startsWith('data:')){payload.photoBase64=r.photo;payload.photoFileName=`asset_${assetNo}.jpg`;}
+  const res=await postToSheet(payload);
+  if(res&&res.ok){
+    r.syncPending=false;
+    if(res.photoUrl){r.photo=res.photoUrl;if(currentAsset&&currentAsset.assetNo===assetNo)renderVerifyPhotoArea();}
+  } else {
+    r.syncPending=true;
+  }
+  saveResults();
+}
+async function syncDisposeRow(rec){
+  const payload={
+    type:'dispose',assetNo:rec.assetNo,description:rec.description||'',office:rec.office||'',
+    department:rec.department||'',deviceType:rec.deviceType||'',assetClass:rec.assetClass||'',
+    disposedAt:rec.disposedAt||'',note:rec.note||'',sanitizationMethod:rec.sanitizationMethod||'',
+    condemnationFormNo:rec.condemnationFormNo||'',disposedBy:rec.disposedBy||'',staffId:rec.staffId||'',rawQR:rec.raw||''
+  };
+  if(rec.photo&&rec.photo.startsWith('data:')){payload.photoBase64=rec.photo;payload.photoFileName=`device_${rec.assetNo}.jpg`;}
+  if(rec.sanitizePhoto&&rec.sanitizePhoto.startsWith('data:')){payload.sanitizePhotoBase64=rec.sanitizePhoto;payload.sanitizePhotoFileName=`sanitize_${rec.assetNo}.jpg`;}
+  const res=await postToSheet(payload);
+  if(res&&res.ok){
+    rec.syncPending=false;
+    if(res.photoUrl)rec.photo=res.photoUrl;
+    if(res.sanitizePhotoUrl)rec.sanitizePhoto=res.sanitizePhotoUrl;
+  } else {
+    rec.syncPending=true;
+  }
+  localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));
+  renderDisposeList();
+}
+function retryPendingSyncs(){
+  if(!sheetsUrl){toast('Set the Sheet URL first','bad');return;}
+  let n=0;
+  Object.keys(results).forEach(assetNo=>{
+    const r=results[assetNo];
+    if(r.syncPending||(r.photo&&r.photo.startsWith('data:'))){syncVerifyRow(assetNo);n++;}
+  });
+  disposeResults.forEach(rec=>{
+    if(rec.syncPending||(rec.photo&&rec.photo.startsWith('data:'))||(rec.sanitizePhoto&&rec.sanitizePhoto.startsWith('data:'))){syncDisposeRow(rec);n++;}
+  });
+  toast(n?`Retrying ${n} pending record(s)…`:'Nothing pending','ok');
+}
+window.addEventListener('online',()=>{if(sheetsUrl)retryPendingSyncs();});
+
 // ── SESSION ───────────────────────────────────────────────────────────────────
 function loadSession(){
   try{assets=JSON.parse(localStorage.getItem(STORE_ASSETS)||'[]');}catch(e){}
@@ -599,7 +716,8 @@ function loadSession(){
     document.getElementById('session-card').style.display='';
   }
 }
-function resumeSession(){switchTab('scan');}
+function resumeSession(){enableScanTabs();switchTab('scan');}
+function enableScanTabs(){['tab-scan','tab-dispose','tab-list','tab-export'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=false;});}
 function clearSession(){results={};disposeResults=[];localStorage.removeItem(STORE_RESULTS);localStorage.removeItem(STORE_DISPOSE);updateProgress();document.getElementById('session-card').style.display='none';toast('Session cleared','ok');}
 function saveResults(){try{localStorage.setItem(STORE_RESULTS,JSON.stringify(results));}catch(e){toast('Storage full — export and clear photos','bad');}}
 
@@ -672,7 +790,7 @@ function takeVerifyPhoto(){
   const save=dataUrl=>{
     if(!results[currentAsset.assetNo])results[currentAsset.assetNo]={status:'',note:'',scannedAt:'',raw:''};
     results[currentAsset.assetNo].photo=dataUrl;
-    saveResults();renderVerifyPhotoArea();toast('Photo saved','ok');
+    saveResults();queueVerifySync(currentAsset.assetNo);renderVerifyPhotoArea();toast('Photo saved','ok');
   };
   if(!snapshotFromVideo('scan-video',save))openCamera(save);
 }
@@ -701,12 +819,12 @@ function renderVerifyPhotoArea(){
 function downloadVerifyPhoto(){
   if(!currentAsset)return;
   const photo=results[currentAsset.assetNo]?.photo;
-  if(photo)downloadDataUrl(photo,`asset_${currentAsset.assetNo}.jpg`);
+  if(photo)openOrDownloadPhoto(photo,`asset_${currentAsset.assetNo}.jpg`);
 }
 function removeVerifyPhoto(){
   if(!currentAsset)return;
   delete results[currentAsset.assetNo].photo;
-  saveResults();renderVerifyPhotoArea();toast('Photo removed','ok');
+  saveResults();queueVerifySync(currentAsset.assetNo);renderVerifyPhotoArea();toast('Photo removed','ok');
 }
 
 // ── DISPOSE PHOTO ─────────────────────────────────────────────────────────────
@@ -837,11 +955,25 @@ async function startCamera(){
     const v=document.getElementById('scan-video');v.srcObject=camStream;await v.play();
     scanActive=true;scanLoop();
   }catch(e){document.getElementById('scan-status').innerHTML=`<span style="color:var(--danger);">Camera denied.</span>`;}
+  updateCamToggleScan();
 }
 function stopCamera(){
   scanActive=false;if(scanAF){cancelAnimationFrame(scanAF);scanAF=null;}
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
   document.getElementById('scan-video').srcObject=null;
+  updateCamToggleScan();
+}
+function toggleScanCamera(){if(camStream)stopCamera();else startCamera();}
+function updateCamToggleScan(){
+  const btn=document.getElementById('cam-toggle-scan');if(!btn)return;
+  if(camStream){btn.textContent='⏹ On';btn.classList.remove('off');}
+  else{btn.textContent='▶ Off';btn.classList.add('off');}
+}
+function manualScanSearch(){
+  const v=document.getElementById('manual-scan-input')?.value.trim();if(!v)return;
+  const assetNo=parseAssetNo(v);
+  handleScan(v,assetNo);
+  document.getElementById('manual-scan-input').value='';
 }
 function scanLoop(){
   if(!scanActive)return;
@@ -936,7 +1068,7 @@ function saveEditDetail(field,value){
   const assetNo=currentAsset.assetNo;
   if(!results[assetNo])results[assetNo]={status:'ok',note:'',scannedAt:new Date().toISOString(),raw:assetNo};
   results[assetNo][field+'Override']=value;
-  saveResults();
+  saveResults();queueVerifySync(assetNo);
   // Refresh displayed value + edited tag without re-rendering whole card
   const rowKey=field==='location'?'Location':'Custodian';
   document.querySelectorAll('.result-row').forEach(row=>{
@@ -963,11 +1095,12 @@ function markAsset(status,silent){
   const assetNo=currentAsset.assetNo;const rawQR=currentAsset._rawQR||assetNo;
   if(!results[assetNo])results[assetNo]={};
   results[assetNo]={...results[assetNo],status,scannedAt:new Date().toISOString(),raw:rawQR,verifiedBy:verifierName,staffId:verifierStaffId};
-  saveResults();updateProgress();
+  saveResults();queueVerifySync(assetNo);updateProgress();
   if(!silent)toast({ok:'✓ Verified',flag:'⚠ Flagged',bad:'✗ Marked missing'}[status],status==='ok'?'ok':'bad');
   document.querySelectorAll('#result-area .action-btn').forEach(b=>{b.classList.remove('active');if(b.classList.contains(status))b.classList.add('active');});
+  setTimeout(retakeVerify,1500);
 }
-function updateNote(note){if(!currentAsset)return;if(!results[currentAsset.assetNo])results[currentAsset.assetNo]={status:'',note:'',scannedAt:'',raw:''};results[currentAsset.assetNo].note=note;saveResults();}
+function updateNote(note){if(!currentAsset)return;if(!results[currentAsset.assetNo])results[currentAsset.assetNo]={status:'',note:'',scannedAt:'',raw:''};results[currentAsset.assetNo].note=note;saveResults();queueVerifySync(currentAsset.assetNo);}
 
 // ── DISPOSE CAMERA ────────────────────────────────────────────────────────────
 async function startDisposeCamera(){
@@ -978,11 +1111,25 @@ async function startDisposeCamera(){
     const v=document.getElementById('dispose-video');v.srcObject=dispCamStream;await v.play();
     dispScanActive=true;disposeScanLoop();
   }catch(e){document.getElementById('dispose-status').innerHTML=`<span style="color:var(--danger);">Camera denied.</span>`;}
+  updateCamToggleDisp();
 }
 function stopDisposeCamera(){
   dispScanActive=false;if(dispScanAF){cancelAnimationFrame(dispScanAF);dispScanAF=null;}
   if(dispCamStream){dispCamStream.getTracks().forEach(t=>t.stop());dispCamStream=null;}
   document.getElementById('dispose-video').srcObject=null;
+  updateCamToggleDisp();
+}
+function toggleDispCamera(){if(dispCamStream)stopDisposeCamera();else startDisposeCamera();}
+function updateCamToggleDisp(){
+  const btn=document.getElementById('cam-toggle-disp');if(!btn)return;
+  if(dispCamStream){btn.textContent='⏹ On';btn.classList.remove('off');}
+  else{btn.textContent='▶ Off';btn.classList.add('off');}
+}
+function manualDispSearch(){
+  const v=document.getElementById('manual-disp-input')?.value.trim();if(!v)return;
+  const assetNo=parseAssetNo(v);
+  handleDisposeScan(v,assetNo);
+  document.getElementById('manual-disp-input').value='';
 }
 function disposeScanLoop(){
   if(!dispScanActive)return;
@@ -1092,7 +1239,7 @@ function confirmDispose(){
   const asset=findAsset(assetNo);
   const note=document.getElementById('dispose-note')?.value||'';
   const sanitizeMethod=document.querySelector('input[name="disp-sanitize"]:checked')?.value||'na';
-  disposeResults.push({
+  const rec={
     assetNo,description:asset?.description||'',office:asset?.office||'',department:asset?.department||'',
     deviceType:asset?.deviceType||'',assetClass:asset?.assetClass||'',
     disposedAt:new Date().toISOString(),note,
@@ -1102,18 +1249,18 @@ function confirmDispose(){
     condemnationFormNo:document.getElementById('condemn-form-no')?.value.trim()||'',
     raw:lastDispScanned,
     disposedBy:verifierName,staffId:verifierStaffId
-  });
+  };
+  disposeResults.push(rec);
   pendingDisposePhoto=null;pendingSanitizePhoto=null;
   // Mark as disposed in results so it shows in the List tab
   if(!results[assetNo])results[assetNo]={};
   results[assetNo]={...results[assetNo],status:'disposed',scannedAt:new Date().toISOString(),raw:lastDispScanned};
   try{localStorage.setItem(STORE_DISPOSE,JSON.stringify(disposeResults));}catch(e){toast('Storage full','bad');}
   saveResults();updateProgress();
+  if(sheetsUrl)syncDisposeRow(rec);
   toast(`Disposal recorded: ${assetNo}`,'ok');
-  if(asset)showDisposeResult(asset,lastDispScanned);
   renderDisposeList();
-  stopDisposeCamera();
-  currentDisposeAssetNo=null;updateDisposeSnapBtn();
+  setTimeout(retakeDispose,1500);
 }
 
 function deleteDisposeRecord(assetNo){
@@ -1147,8 +1294,8 @@ function renderDisposeList(){
       ${d.note?`<div class="dispose-meta" style="color:var(--text-3);">Note: ${d.note}</div>`:''}
       ${d.condemnationFormNo?`<div class="dispose-meta">Condemnation Form No.: <strong>${escH(d.condemnationFormNo)}</strong></div>`:''}
       <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;align-items:center;">
-        ${d.photo?`<a href="${d.photo}" download="asset_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Asset Photo</a><button onclick="removeDisposePhoto('${escJ(d.assetNo)}','photo')" style="font-size:10px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;">✕ Photo</button>`:''}
-        ${d.sanitizePhoto?`<a href="${d.sanitizePhoto}" download="sanitize_${d.assetNo}.jpg" style="font-size:10px;color:var(--accent);">Save Sanitize Proof</a><button onclick="removeDisposePhoto('${escJ(d.assetNo)}','sanitizePhoto')" style="font-size:10px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;">✕ Proof</button>`:''}
+        ${d.photo?`<button onclick="openOrDownloadPhoto(disposeResults.find(x=>x.assetNo==='${escJ(d.assetNo)}').photo,'asset_${escJ(d.assetNo)}.jpg')" style="font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;">${d.photo.startsWith('data:')?'Save':'View'} Asset Photo</button><button onclick="removeDisposePhoto('${escJ(d.assetNo)}','photo')" style="font-size:10px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;">✕ Photo</button>`:''}
+        ${d.sanitizePhoto?`<button onclick="openOrDownloadPhoto(disposeResults.find(x=>x.assetNo==='${escJ(d.assetNo)}').sanitizePhoto,'sanitize_${escJ(d.assetNo)}.jpg')" style="font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;">${d.sanitizePhoto.startsWith('data:')?'Save':'View'} Sanitize Proof</button><button onclick="removeDisposePhoto('${escJ(d.assetNo)}','sanitizePhoto')" style="font-size:10px;color:var(--danger);background:none;border:none;cursor:pointer;padding:0;">✕ Proof</button>`:''}
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
         <div class="dispose-time">${time}</div>
@@ -1160,6 +1307,7 @@ function renderDisposeList(){
 
 function exportDisposal(){
   if(!disposeResults.length){toast('No records to export','bad');return;}
+  if(!confirm(`Download disposal CSV? (${disposeResults.length} records)`))return;
   const cols=['Asset Number','Description','Office','Department','Device Type','Asset Class','Disposed At','Note','Sanitization Method','Asset Photo Taken','Sanitize Proof Taken','Condemnation Form No.','Disposed By','Staff ID','QR Raw'];
   const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
   const rows=[cols.join(','),...disposeResults.map(d=>[
@@ -1232,13 +1380,13 @@ function jumpToAsset(assetNo){
   ].filter(x=>x&&x[1]).map(([l,v])=>`<div class="sheet-row"><div class="sheet-label">${l}</div><div class="sheet-value">${escH(v)}</div></div>`).join('');
   let photos='';
   if(st==='disposed'){
-    if(dispRec?.photo)photos+=`<div class="sheet-photo-block"><div class="sheet-photo-label">Device Photo</div><img class="sheet-photo" src="${dispRec.photo}" alt="Device photo"><br><button class="sheet-photo-save" onclick="downloadDataUrl(disposeResults.find(d=>d.assetNo==='${escJ(assetNo)}').photo,'device_${escJ(assetNo)}.jpg')">Save to device</button></div>`;
-    if(dispRec?.sanitizePhoto)photos+=`<div class="sheet-photo-block"><div class="sheet-photo-label">Sanitization Proof</div><img class="sheet-photo" src="${dispRec.sanitizePhoto}" alt="Sanitization proof"><br><button class="sheet-photo-save" onclick="downloadDataUrl(disposeResults.find(d=>d.assetNo==='${escJ(assetNo)}').sanitizePhoto,'sanitize_${escJ(assetNo)}.jpg')">Save to device</button></div>`;
+    if(dispRec?.photo)photos+=`<div class="sheet-photo-block"><div class="sheet-photo-label">Device Photo</div><img class="sheet-photo" src="${dispRec.photo}" alt="Device photo"><br><button class="sheet-photo-save" onclick="openOrDownloadPhoto(disposeResults.find(d=>d.assetNo==='${escJ(assetNo)}').photo,'device_${escJ(assetNo)}.jpg')">${dispRec.photo.startsWith('data:')?'Save to device':'Open in Drive'}</button></div>`;
+    if(dispRec?.sanitizePhoto)photos+=`<div class="sheet-photo-block"><div class="sheet-photo-label">Sanitization Proof</div><img class="sheet-photo" src="${dispRec.sanitizePhoto}" alt="Sanitization proof"><br><button class="sheet-photo-save" onclick="openOrDownloadPhoto(disposeResults.find(d=>d.assetNo==='${escJ(assetNo)}').sanitizePhoto,'sanitize_${escJ(assetNo)}.jpg')">${dispRec.sanitizePhoto.startsWith('data:')?'Save to device':'Open in Drive'}</button></div>`;
     if(!dispRec?.photo&&!dispRec?.sanitizePhoto)photos='<div style="font-size:12px;color:var(--text-3);padding:8px 0;">No photos recorded</div>';
   } else {
     if(r.photo)photos=`<img class="sheet-photo" src="${r.photo}" alt="Asset photo">`;
   }
-  const saveBtn=r.photo&&st!=='disposed'?`<button class="btn btn-outline" style="flex:1" onclick="downloadDataUrl(results['${escJ(assetNo)}'].photo,'asset_${escJ(assetNo)}.jpg')">Save photo</button>`:'';
+  const saveBtn=r.photo&&st!=='disposed'?`<button class="btn btn-outline" style="flex:1" onclick="openOrDownloadPhoto(results['${escJ(assetNo)}'].photo,'asset_${escJ(assetNo)}.jpg')">${r.photo.startsWith('data:')?'Save photo':'Open in Drive'}</button>`:'';
   document.getElementById('ds-body').innerHTML=rows+photos+`<div class="sheet-actions">${saveBtn}</div>`;
   document.getElementById('detail-backdrop').classList.add('open');
 }
@@ -1250,6 +1398,7 @@ function closeDetailSheet(e){
 // ── EXPORT VERIFY ─────────────────────────────────────────────────────────────
 function exportReport(){
   if(!assets.length){toast('No assets loaded','bad');return;}
+  if(!confirm(`Download verification report CSV? (${assets.length} assets)`))return;
   const cols=['Asset Number','Description','Custodian','Custodian (Edited)','Location','Location (Edited)','Serial No','Office','Department','Device Type','Asset Class','Status','Note','Photo Taken','Scanned At','Verified By','Staff ID','QR Raw'];
   const esc=v=>'"'+String(v||'').replace(/"/g,'""')+'"';
   const rows=[cols.join(',')];
@@ -1295,12 +1444,14 @@ function submitAdminPin(){
   }
 }
 function unlockAdminPanel(){
-  document.getElementById('verifier-admin-panel').style.display='';
-  document.getElementById('admin-lock-btn').textContent='🔓';
+  renderVerifierListSetup();
+  document.getElementById('admin-sheet-backdrop').style.display='flex';
 }
 function lockAdminPanel(){
-  document.getElementById('verifier-admin-panel').style.display='none';
-  document.getElementById('admin-lock-btn').textContent='🔒';
+  document.getElementById('admin-sheet-backdrop').style.display='none';
+}
+function closeAdminSheet(e){
+  if(!e||e.target===document.getElementById('admin-sheet-backdrop'))lockAdminPanel();
 }
 
 // ── VERIFIER LIST (setup) ─────────────────────────────────────────────────────
@@ -1344,11 +1495,11 @@ function renderVerifierPicker(){
     sub.textContent='Your name and staff ID will be recorded with every asset.';
     return;
   }
-  sub.textContent='Select your name to begin.';
+  sub.textContent='Select your name to begin. Only registered verifiers can access this app.';
   picker.innerHTML=verifiers.map((v,i)=>`<button class="verifier-pick-btn" onclick="selectVerifier(${i})">
     <span>${escH(v.name)}</span>
     <span style="font-size:11px;color:var(--text-3);font-weight:400;">${escH(v.staffId)}</span>
-  </button>`).join('')+`<button class="verifier-pick-btn other" onclick="showManualVerifier()">Other…</button>`;
+  </button>`).join('');
   manual.style.display='none';
 }
 function selectVerifier(i){
@@ -1363,18 +1514,51 @@ function showManualVerifier(){
   document.getElementById('verifier-manual-section').style.display='';
   document.getElementById('verifier-modal-sub').textContent='Enter your name to begin.';
 }
-function ensureVerifier(callback){
-  if(verifierName){callback();return;}
-  _verifierCallback=callback;
-  renderVerifierPicker();
+function openSignIn(){
+  if(verifierName){
+    if(confirm(`Signed in as ${verifierName}${verifierStaffId?' ('+verifierStaffId+')':''}.\n\nSign out and switch user?`)){signOut();}
+    return;
+  }
+  const stored=localStorage.getItem(STORE_ADMIN_PIN);
+  document.getElementById('signin-pin-input').value='';
+  document.getElementById('signin-pin-step').style.display='';
+  document.getElementById('signin-name-step').style.display='none';
+  document.getElementById('verifier-modal-sub').textContent=stored?'Enter PIN to continue.':'No PIN set — ask admin to configure PIN first.';
   document.getElementById('verifier-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('signin-pin-input').focus(),100);
 }
-function changeVerifier(){
+function checkSigninPin(){
+  const input=document.getElementById('signin-pin-input').value;
+  const stored=localStorage.getItem(STORE_ADMIN_PIN);
+  if(!stored){toast('No PIN configured. Use ⚙ admin panel in the header.','bad');return;}
+  if(input!==stored){toast('Incorrect PIN','bad');document.getElementById('signin-pin-input').value='';return;}
+  document.getElementById('signin-pin-step').style.display='none';
+  document.getElementById('signin-name-step').style.display='';
+  document.getElementById('verifier-modal-sub').textContent='Select your name.';
+  renderVerifierPicker();
+}
+function openAdminFromSignin(){
+  document.getElementById('verifier-overlay').classList.remove('open');
+  openAdminPanel();
+}
+function signOut(){
   verifierName='';verifierStaffId='';
-  _verifierCallback=null;
-  renderVerifierPicker();
-  document.getElementById('verifier-overlay').classList.add('open');
+  ['tab-setup','tab-scan','tab-dispose','tab-list','tab-export'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=true;});
+  ['scan','dispose'].forEach(t=>document.getElementById(`verifier-bar-${t}`)?.classList.remove('show'));
+  updateSignInBtn();
+  openSignIn();
 }
+function updateSignInBtn(){
+  const btn=document.getElementById('admin-lock-btn');if(!btn)return;
+  if(verifierName){
+    btn.title=`${verifierName} — click to sign out`;
+    btn.innerHTML=`<span style="font-size:9px;font-weight:700;color:var(--accent);max-width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;">${verifierName.split(' ')[0]}</span>`;
+  } else {
+    btn.title='Sign in';
+    btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+  }
+}
+function changeVerifier(){signOut();}
 function confirmVerifier(){
   const name=document.getElementById('verifier-name-input').value.trim();
   const sid=document.getElementById('verifier-staffid-input').value.trim();
@@ -1389,9 +1573,12 @@ function applyVerifier(){
     document.getElementById(`verifier-bar-${t}-name`).textContent=label;
     document.getElementById(`verifier-bar-${t}`).classList.add('show');
   });
-  document.querySelectorAll('.nav-tab').forEach(b=>b.disabled=false);
+  updateSignInBtn();
+  document.getElementById('tab-setup').disabled=false;
+  if(assets.length)enableScanTabs();
   if(_verifierCallback){_verifierCallback();_verifierCallback=null;}
 }
+function ensureVerifier(callback){if(verifierName){callback();}}
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
 let currentTab='setup';
@@ -1434,15 +1621,36 @@ function toast(msg,type){
   document.documentElement.setAttribute('data-theme',theme);
   if(theme==='dark')document.getElementById('theme-icon').innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
   const savedUrl=localStorage.getItem(STORE_URL);if(savedUrl)document.getElementById('csv-url').value=savedUrl;
-  initScanner();loadSession();loadVerifiers();renderVerifierListSetup();
+  initScanner();loadSession();loadVerifiers();renderVerifierListSetup();loadSheetsUrl();
   document.getElementById('tab-setup').classList.add('active');
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){stopCamera();stopDisposeCamera();}
     else{if(currentTab==='scan')startCamera();else if(currentTab==='dispose')startDisposeCamera();}
   });
-  document.addEventListener('DOMContentLoaded',()=>ensureVerifier(()=>{}));
+  document.addEventListener('DOMContentLoaded',()=>updateSignInBtn());
 })();
 </script>
+
+<!-- ADMIN PANEL SHEET -->
+<div class="sheet-backdrop" id="admin-sheet-backdrop" onclick="closeAdminSheet(event)" style="display:none;">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-asset-no">Verifier Management</div>
+      <button class="sheet-close" onclick="closeAdminSheet()">✕</button>
+    </div>
+    <div style="padding:0 16px 24px;">
+      <div class="setup-sub" style="margin-bottom:12px;">Only people on this list can log in. Managed by admin PIN.</div>
+      <div id="verifier-list-display"></div>
+      <div style="display:flex;gap:6px;margin-top:12px;">
+        <input type="text" id="vl-name" placeholder="Full name" style="flex:1.5;">
+        <input type="text" id="vl-id" placeholder="Staff ID" style="flex:1;">
+        <button onclick="addVerifierToList()" style="padding:8px 14px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;border:none;">Add</button>
+      </div>
+      <button onclick="closeAdminSheet()" style="width:100%;margin-top:12px;padding:9px;background:none;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--text-3);cursor:pointer;">🔒 Lock &amp; Close</button>
+    </div>
+  </div>
+</div>
 
 <!-- ASSET DETAIL SHEET -->
 <div class="sheet-backdrop" id="detail-backdrop" onclick="closeDetailSheet(event)">
@@ -1473,22 +1681,32 @@ function toast(msg,type){
   </div>
 </div>
 
-<!-- VERIFIER MODAL -->
+<!-- SIGN IN MODAL -->
 <div class="verifier-overlay" id="verifier-overlay">
   <div class="verifier-box">
-    <div class="verifier-title">Who are you?</div>
-    <div class="verifier-sub" id="verifier-modal-sub">Select your name to begin.</div>
-    <div id="verifier-picker"></div>
-    <div id="verifier-manual-section">
+    <div class="verifier-title">Sign In</div>
+    <div class="verifier-sub" id="verifier-modal-sub">Enter PIN to continue.</div>
+    <div id="signin-pin-step">
       <div class="verifier-field">
-        <label>Full Name *</label>
-        <input type="text" id="verifier-name-input" placeholder="e.g. John Tan" autocomplete="name">
+        <label>PIN</label>
+        <input type="password" id="signin-pin-input" placeholder="••••" inputmode="numeric" maxlength="8" onkeydown="if(event.key==='Enter')checkSigninPin()">
       </div>
-      <div class="verifier-field">
-        <label>Staff ID</label>
-        <input type="text" id="verifier-staffid-input" placeholder="e.g. IT0123" autocomplete="off">
+      <button class="btn btn-primary" onclick="checkSigninPin()" style="margin-top:8px;">Continue</button>
+    </div>
+    <div id="signin-name-step" style="display:none;">
+      <div id="verifier-picker"></div>
+      <div id="verifier-manual-section" style="display:none;">
+        <div class="verifier-field">
+          <label>Full Name *</label>
+          <input type="text" id="verifier-name-input" placeholder="e.g. John Tan" autocomplete="name">
+        </div>
+        <div class="verifier-field">
+          <label>Staff ID</label>
+          <input type="text" id="verifier-staffid-input" placeholder="e.g. IT0123" autocomplete="off">
+        </div>
+        <button class="btn btn-primary" id="verifier-confirm-btn" onclick="confirmVerifier()" style="margin-top:4px;">Confirm &amp; Start</button>
       </div>
-      <button class="btn btn-primary" id="verifier-confirm-btn" onclick="confirmVerifier()" style="margin-top:4px;">Confirm &amp; Start</button>
+      <button onclick="openAdminFromSignin()" style="width:100%;margin-top:10px;padding:7px;background:none;border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text-3);cursor:pointer;">⚙ Manage Verifier List</button>
     </div>
   </div>
 </div>
